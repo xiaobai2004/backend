@@ -26,6 +26,10 @@
 {% endblock %}
 
 {% block page_content %}
+    <div id="uploadForm">
+        <input id="uploadFile" type="file" name=file/>
+        <button id="uploadBtn" type="button">上传</button>
+    </div>
     <div id="original_text" class="text">
         This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text.
     </div>
@@ -67,8 +71,12 @@ $(document).ready(function(){
             contentType: false
         }).done(function(res) {
             var data = JSON.parse(res)
-            var origin = JSON.stringify(data.parts.origin).replace(/\\r\\n/g, '<br/>')
+            var origin = JSON.stringify(data.parts.origin).replace(/\\r\\n/g, '<br/>');
+            var vernacular = JSON.stringify(data.parts.vernacular).replace(/\\r\\n/g, '<br/>');
+            var comment = JSON.stringify(data.parts.comment).replace(/\\r\\n/g, '<br/>');
             $("#original_text").html(origin);
+            $("#vernacular_text").html(vernacular);
+            $("#comment").html(comment);
         }).fail(function(res) {});
     })
 });
