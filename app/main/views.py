@@ -42,9 +42,7 @@ def new_test(user):
 def upload():
     origin_content = request.files['file'].stream.read().decode('gbk')
     parts = re.split(re.compile(u'【原典】|【白话语译】|【注释】|【校勘】'), origin_content)
-    print len(parts)
-    print parts
-    if len(parts) < 4 or len(parts) > 5: 
+    if len(parts) < 4 or len(parts) > 5:
         return json.dumps({'success': 'false', 'message': u'未找到合适的分隔符：【原典】，【白话语译】，【注释】'})
 
     title = translate(parts[0])
@@ -74,10 +72,12 @@ def convert():
     comment_list = re.split(re.compile(CHAR_SPLIT_REGEX), params['comment'])
     comment_map = {}
     for comment in comment_list:
+
         if len(comment) == 0:
             continue
         comment_parts = re.split(re.compile(u'：'), comment)
-        print comment_parts
+        if len(comment_parts) != 2:
+            continue
         comment_map[comment_parts[0].strip()] = comment_parts[1].strip()
 
 
@@ -94,8 +94,6 @@ def convert():
 def get_line_contains_comment(origin, comment_map):
     res = {}
     for (key, value) in comment_map.items():
-        print key
-        print origin
         if key in origin and key not in res:
             res[key] = key + ":" + value
     return res
