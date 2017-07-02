@@ -22,6 +22,7 @@
     #text_lines{
         overflow: auto;
         height: 480x;
+        margin-bottom: 50px
     }
     #uploadFile{
         display:none;
@@ -44,7 +45,9 @@
     <input id="uploadFile" type="file" name=file/>
     <button id="uploadBtn" class="btn btn-primary btn-right-first" type="button">上传</button>
     <button id="convertBtn" class="btn btn-primary btn-right" type="button">转换</button>
-    <button id="exportBtn" class="btn btn-primary btn-right" type="button">导出</button>
+    <a id="exportLink" onclick="clickDownload(this)" href="#">
+        <button id="exportBtn" class="btn btn-primary btn-right buttons-excel" type="button" >导出</button>
+    </a>
 </div>
 <div id="edit_area" style=";margin-bottom:10px;">
     <textarea id="original_text" class="form-control text" rows="20">
@@ -82,6 +85,18 @@ $(document).ready(function(){
   uploadBtnBind();
   convertBtnBind();
 });
+function clickDownload(aLink){
+     var str = "";
+     $("#text_lines table tr").each(function(){
+        var rowList = [];
+        $(this).find("td").each(function(){
+              rowList.push($(this).text().replace(/[\r\n]/g,"").replace(/^[\s　]+|[\s　]+$/g, ""));
+        });
+        str+=rowList.join(",")+"\n";
+     });
+     str =  encodeURIComponent(str);
+     aLink.href = "data:text/csv;charset=utf-8,\ufeff"+str;
+}
 function uploadFile(){
     $('#uploadFile').on("change", function(e){
         var name = e.currentTarget.files[0].name;
@@ -104,6 +119,7 @@ function uploadFile(){
                 $("#original_text").val(origin);
                 $("#vernacular_text").val(vernacular);
                 $("#comment").val(comment);
+                $("#exportLink").attr("download",$("#fileName").text()+".csv");
                 localStorageRefresh($("#fileName").text(),origin,vernacular,comment);
             } else {
                 alert(data.message);
@@ -134,7 +150,7 @@ function convertBtnBind(){
                 tr.append("<td>"+ data[idx].vernacular_text +"</td>");
                 commentStr = "";
                 for (cidx in data[idx].comment){
-                    commentStr += data[idx].comment[cidx];
+                    commentStr += data[idx].comment[cidx] + ";";
                 }
                 tr.append("<td>"+ commentStr +"</td>");
                 $("#text_lines tbody").append(tr);
@@ -160,7 +176,9 @@ function textAreaDataInit(){
     });
     if("file_name" in localStorage){
         $("#fileName").html(localStorage.file_name);
+        $("#exportLink").attr("download",localStorage.file_name+".csv");
     }
+
 }
 function textAreaScrollBind(){
 //   function scrollByOriginal_text(id,current){
