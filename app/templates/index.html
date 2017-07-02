@@ -71,12 +71,16 @@ $(document).ready(function(){
             contentType: false
         }).done(function(res) {
             var data = JSON.parse(res)
-            var origin = JSON.stringify(data.parts.origin).replace(/\\r\\n/g, '<br/>');
-            var vernacular = JSON.stringify(data.parts.vernacular).replace(/\\r\\n/g, '<br/>');
-            var comment = JSON.stringify(data.parts.comment).replace(/\\r\\n/g, '<br/>');
-            $("#original_text").html(origin);
-            $("#vernacular_text").html(vernacular);
-            $("#comment").html(comment);
+            if(data.success == 'true'){
+                var origin = JSON.stringify(data.parts.origin).replace(/\\r\\n/g, '<br/>');
+                var vernacular = JSON.stringify(data.parts.vernacular).replace(/\\r\\n/g, '<br/>');
+                var comment = JSON.stringify(data.parts.comment).replace(/\\r\\n/g, '<br/>');
+                $("#original_text").html(origin);
+                $("#vernacular_text").html(vernacular);
+                $("#comment").html(comment);
+            } else {
+                alert(data.message);
+            }
         }).fail(function(res) {});
     })
 });
