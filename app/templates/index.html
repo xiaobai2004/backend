@@ -56,6 +56,7 @@
      <table class="table table-striped table-condensed">
         <thead>
             <tr>
+                <td>id</td>
                 <td>原文</td>
                 <td>白话文</td>
                 <td>注释</td>
@@ -74,7 +75,11 @@ $(document).ready(function(){
   textAreaDataInit();
   textAreaScrollBind();
   textAreaChangeBind();
-  $('#uploadFile').on("change", function(e){
+  uploadFile();
+  uploadBtnBind();
+});
+function uploadFile(){
+    $('#uploadFile').on("change", function(e){
         var name = e.currentTarget.files[0].name;
         $("#fileName").text(name);
         var formData = new FormData();
@@ -103,12 +108,13 @@ $(document).ready(function(){
             }
         }).fail(function(res) {});
   });
-
+}
+function uploadBtnBind(){
   $("#uploadBtn").on('click', function(e){
         e.preventDefault();
         $('#uploadFile').trigger('click');
   });
-});
+}
 function textAreaDataInit(){
     $("textarea").each(function(){
         var id = $(this).attr("id");
