@@ -163,18 +163,18 @@ function textAreaDataInit(){
     }
 }
 function textAreaScrollBind(){
-   function scrollByOriginal_text(id,current){
-        var elem = $(`#${id}`);
-        var maxHeight = elem[0].scrollHeight -elem.outerHeight();
-        elem.scrollTop(maxHeight*current);
-    }
-   $("#original_text").scroll(function() {
-        var height = $(this)[0].scrollHeight - $(this).outerHeight();
-        var current = $(this).scrollTop()/height;
-        scrollByOriginal_text("vernacular_text",current);
-        scrollByOriginal_text("comment",current);
-        scrollByOriginal_text("text_lines",current);
-  });
+//   function scrollByOriginal_text(id,current){
+//        var elem = $(`#${id}`);
+//        var maxHeight = elem[0].scrollHeight -elem.outerHeight();
+//        elem.scrollTop(maxHeight*current);
+//    }
+//   $("#original_text").scroll(function() {
+//        var height = $(this)[0].scrollHeight - $(this).outerHeight();
+//        var current = $(this).scrollTop()/height;
+//        scrollByOriginal_text("vernacular_text",current);
+//        scrollByOriginal_text("comment",current);
+//        scrollByOriginal_text("text_lines",current);
+//  });
 }
 
 function textAreaChangeBind(){
