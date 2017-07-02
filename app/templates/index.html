@@ -89,10 +89,9 @@ $(document).ready(function(){
         }).done(function(res) {
             var data = JSON.parse(res)
             if(data.success == 'true'){
-                //replace(/\\r\\n/g, '<br/>')
-                var origin = JSON.stringify(data.parts.origin);
-                var vernacular = JSON.stringify(data.parts.vernacular);
-                var comment = JSON.stringify(data.parts.comment);
+                var origin = data.parts.origin;
+                var vernacular = data.parts.vernacular;
+                var comment = data.parts.comment;
                 $("#original_text").val(origin);
                 $("#vernacular_text").val(vernacular);
                 $("#comment").val(comment);

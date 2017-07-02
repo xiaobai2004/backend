@@ -10,6 +10,7 @@ import json
 import re
 import chardet
 from global_vars import CHAR_FILTER_MAP
+from global_vars import CHAR_SPLIT_REGEX
 
 seq = 0
 
@@ -40,10 +41,6 @@ def new_test(user):
 @main.route('/upload', methods=['POST'])
 def upload():
     origin_content = request.files['file'].stream.read().decode('gbk')
-    # return json.dumps({'success': 'true', 'parts': {
-    #     'origin': origin_content
-    # }})
-    # print chardet.detect(origin_content)
     parts = re.split(re.compile(u'【原典】|【白话语译】|【注释】|【校勘】'), origin_content)
     print len(parts)
     print parts
@@ -65,6 +62,21 @@ def upload():
         'comment': comment,
         'collation': collation
     }})
+
+@main.route('/convert', methods=['POST'])
+def convert():
+    params = request.args.to_dict()
+    result = []
+
+    params['original_text']
+
+    for (text_type, text) in params:
+        result[text_type] = re.split(re.compile(CHAR_SPLIT_REGEX), text)
+
+
+
+def split(text):
+
 
 
 def translate(origin_text):
