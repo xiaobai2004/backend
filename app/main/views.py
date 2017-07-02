@@ -76,16 +76,21 @@ def convert():
         comment_parts = re.split(re.compile(u':|：'), comment)
         comment_map[comment_parts[0]] = comment_parts[1]
 
-    for index, origin in enumerate(origin_list):
-        result.append({
-            "original_text": origin,
-            "vernacular_text": vernacular_list
-        })
+    # for idx, origin in enumerate(origin_list):
+    #     result.append({
+    #         "original_text": origin,
+    #         "vernacular_text": vernacular_list[idx],
+    #         "comment":
+    #     })
 
 
 
     for (text_type, text) in params:
         result[text_type] = re.split(re.compile(CHAR_SPLIT_REGEX), text)
+
+
+def get_line_contains_comment(origin_list, key):
+    pass
 
 
 def strB2Q(uchar):
