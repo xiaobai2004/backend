@@ -63,34 +63,37 @@ def upload():
         'collation': collation
     }})
 
+
 @main.route('/convert', methods=['POST'])
 def convert():
-    params = request.args.to_dict()
+    params = request.json
     result = []
 
     origin_list = re.split(re.compile(CHAR_SPLIT_REGEX), params['original_text'])
     vernacular_list = re.split(re.compile(CHAR_SPLIT_REGEX), params['vernacular_text'])
     comment_list = re.split(re.compile(CHAR_SPLIT_REGEX), params['comment'])
     comment_map = {}
-    for comment in comment_list:
-        comment_parts = re.split(re.compile(u':|：'), comment)
-        comment_map[comment_parts[0]] = comment_parts[1]
+    # for comment in comment_list:
+    #     print comment.encode('gbk')
+    #     comment_parts = re.split(re.compile(u':'), comment)
+    #     print comment_parts
+    #     comment_map[comment_parts[0]] = comment_parts[1]
 
-    # for idx, origin in enumerate(origin_list):
-    #     result.append({
-    #         "original_text": origin,
-    #         "vernacular_text": vernacular_list[idx],
-    #         "comment":
-    #     })
-
-
-
-    for (text_type, text) in params:
-        result[text_type] = re.split(re.compile(CHAR_SPLIT_REGEX), text)
+    for idx, origin in enumerate(origin_list):
+        result.append({
+            "original_text": origin,
+            "vernacular_text": vernacular_list[idx],
+            "comment": get_line_contains_comment(origin, comment_map)
+        })
+    return json.dumps({"success": "true", "formatData": result})
 
 
-def get_line_contains_comment(origin_list, key):
-    pass
+def get_line_contains_comment(origin, comment_map):
+    res = {}
+    for (key, value) in comment_map:
+        if key in origin and key not in res:
+            res[key] = value
+    return res
 
 
 def strB2Q(uchar):
