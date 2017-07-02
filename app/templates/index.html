@@ -80,6 +80,7 @@ $(document).ready(function(){
   textAreaChangeBind();
   uploadFile();
   uploadBtnBind();
+  convertBtnBind();
 });
 function uploadFile(){
     $('#uploadFile').on("change", function(e){
@@ -109,6 +110,34 @@ function uploadFile(){
             }
         }).fail(function(res) {});
   });
+}
+function convertBtnBind(){
+    $("#convertBtn").on("click", function(){
+        $.ajax({
+            url: "{{ url_for('main.convert') }}",
+            type: 'POST',
+            cache: false,
+            dataType:'json',
+            data: JSON.stringify({
+                "original_text": $("#original_text").val(),
+                "vernacular_text": $("#vernacular_text").val(),
+                "comment": $("#comment").val()
+            }),
+            contentType: "application/json"
+        }).done(function(res) {
+            var data = res.formatData;
+            $("#text_lines tbody").empty();
+            for (idx in data){
+                var tr = $("<tr></tr>");
+                tr.append("<td>"+ idx +"</td>");
+                tr.append("<td>"+ data[idx].original_text +"</td>");
+                tr.append("<td>"+ data[idx].vernacular_text +"</td>");
+                tr.append("<td>"+ data[idx].comment +"</td>");
+                $("#text_lines tbody").append(tr);
+            }
+        }).fail(function(res) {});
+
+    });
 }
 function uploadBtnBind(){
   $("#uploadBtn").on('click', function(e){
