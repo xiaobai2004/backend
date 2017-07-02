@@ -71,7 +71,7 @@ def strB2Q(uchar):
     code = inside_code
     if inside_code<0x0020 or inside_code>0x7e:      #不是半角字符就返回原来的字符
         code = inside_code
-    else if inside_code==0x0020: #除了空格其他的全角半角的公式为:半角=全角-0xfee0
+    elif inside_code==0x0020: #除了空格其他的全角半角的公式为:半角=全角-0xfee0
         code = 0x3000
     else:
         code = inside_code + 0xfee0
