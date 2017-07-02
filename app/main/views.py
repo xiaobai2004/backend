@@ -46,7 +46,7 @@ def upload():
     parts = re.split(re.compile(u'【原典】|【白话语译】|【注释】|【校勘】'), origin_content)
     print len(parts)
     print parts
-    if len(parts) < 4 or len(parts) > 5 :
+    if len(parts) < 4 or len(parts) > 5: 
         return json.dumps({'success': 'false', 'message': 'file format error'})
 
     title = translate(parts[0])
@@ -67,11 +67,11 @@ def upload():
 
 def strB2Q(uchar):
     """把字符串半角转全角"""
-    inside_code=ord(uchar)
+    inside_code = ord(uchar)
     code = inside_code
-    if inside_code<0x0020 or inside_code>0x7e:      #不是半角字符就返回原来的字符
+    if inside_code < 0x0020 or inside_code > 0x7e:      #不是半角字符就返回原来的字符
         code = inside_code
-    elif inside_code==0x0020: #除了空格其他的全角半角的公式为:半角=全角-0xfee0
+    elif inside_code == 0x0020: #除了空格其他的全角半角的公式为:半角=全角-0xfee0
         code = 0x3000
     else:
         code = inside_code + 0xfee0
@@ -83,4 +83,4 @@ def translate(origin_text):
     :param origin_text:
     :return:
     """
-    return u''.join(origin_text.map( lambda uc: strB2Q(uc)))
+    return u''.join(filter(lambda uc: uc if strB2Q(u' ') != uc else u'', map(lambda uc: strB2Q(uc), origin_text)))
