@@ -16,7 +16,7 @@ def get_config(key):
     timeout = TabConfig.query.filter_by( key='biaodian/execise/time_limit').first().value
     return int(timeout)
 
-@main.route('/', methods=['GET', 'POST'])
+@main.route('/index', methods=['GET', 'POST'])
 def index():
     content=u""" { "开始一个新的测试": {
       "request": "[GET, POST] test/new/<user>",
@@ -45,3 +45,7 @@ def new_test(user):
                 }""" %( user, str(int(time.time())) + str(seq) ) ) )
 
 
+
+@main.route('/')
+def tests_show():
+    return render_template('index.html')
