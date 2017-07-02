@@ -83,4 +83,4 @@ def translate(origin_text):
     :param origin_text:
     :return:
     """
-    return u''.join(origin_text.map( lambda uc: strB2Q(uc) )))
+    return u''.join(origin_text.map( lambda uc: strB2Q(uc)))
