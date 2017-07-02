@@ -23,17 +23,26 @@
     #uploadFile{
         display:none;
     }
+    .btn-right-first{
+        margin-left: 82%;
+    }
+    .btn-right{
+        margin-left: 10px;
+    }
+    #uploadForm{
+        margin-bottom: 5%;
+    }
 </style>
 {% endblock %}
 
 {% block page_content %}
-    <div id="uploadForm">
-        <input id="uploadFile" type="file" name=file/>
-        <button id="uploadBtn" class="btn btn-primary" type="button">上传</button>
-        <button id="convertBtn" class="btn btn-primary" type="button">转换</button>
-        <button id="exportBtn" class="btn btn-primary" type="button">导出</button>
-        <div class="h2 text-center" id="fileName"></div>
-    </div>
+<div id="uploadForm">
+    <div class="h2 text-center" id="fileName"></div>
+    <input id="uploadFile" type="file" name=file/>
+    <button id="uploadBtn" class="btn btn-primary btn-right-first" type="button">上传</button>
+    <button id="convertBtn" class="btn btn-primary btn-right" type="button">转换</button>
+    <button id="exportBtn" class="btn btn-primary btn-right" type="button">导出</button>
+</div>
 <div id="edit_area" style=";margin-bottom:10px;">
     <textarea id="original_text" class="form-control text" rows="10">
         This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text.
@@ -152,9 +161,10 @@ $(document).ready(function(){
         }).done(function(res) {
             var data = JSON.parse(res)
             if(data.success == 'true'){
-                var origin = JSON.stringify(data.parts.origin).replace(/\\r\\n/g, '<br/>');
-                var vernacular = JSON.stringify(data.parts.vernacular).replace(/\\r\\n/g, '<br/>');
-                var comment = JSON.stringify(data.parts.comment).replace(/\\r\\n/g, '<br/>');
+                //replace(/\\r\\n/g, '<br/>')
+                var origin = JSON.stringify(data.parts.origin);
+                var vernacular = JSON.stringify(data.parts.vernacular);
+                var comment = JSON.stringify(data.parts.comment);
                 $("#original_text").html(origin);
                 $("#vernacular_text").html(vernacular);
                 $("#comment").html(comment);
