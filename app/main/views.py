@@ -73,9 +73,11 @@ def convert():
     vernacular_list = re.split(re.compile(CHAR_SPLIT_REGEX), params['vernacular_text'])
     comment_list = re.split(re.compile(CHAR_SPLIT_REGEX), params['comment'])
     comment_map = {}
+    # count = 0
     # for comment in comment_list:
-    #     print comment.encode('gbk')
-    #     comment_parts = re.split(re.compile(u':'), comment)
+    #     count += 1
+    #     print count
+    #     comment_parts = re.split(re.compile(u'：'), comment)
     #     print comment_parts
     #     comment_map[comment_parts[0]] = comment_parts[1]
 
@@ -85,6 +87,8 @@ def convert():
             "vernacular_text": vernacular_list[idx],
             "comment": get_line_contains_comment(origin, comment_map)
         })
+
+    print result[0]
     return json.dumps({"success": "true", "formatData": result})
 
 
