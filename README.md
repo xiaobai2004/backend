@@ -17,7 +17,7 @@
 > git push origin
 
 
-> git push sae <number> (the current number is 1)
+> git push sae head:<number> (the current number is 1)
 
 
 
