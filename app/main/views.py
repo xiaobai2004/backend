@@ -9,7 +9,6 @@ from .forms import NameForm
 import json
 import re
 import chardet
-from global_vars import CHAR_FILTER_MAP
 
 seq = 0
 
@@ -44,7 +43,7 @@ def upload():
     #     'origin': origin_content
     # }})
     # print chardet.detect(origin_content)
-    parts = re.split(re.compile(u'【原典】|【白话语译】|【注释】'), origin_content)
+    parts = re.split(re.compile(u'【原典】|【白话语译】|【注释】| 【校勘】'), origin_content)
     print len(parts)
     if len(parts) != 4:
         return json.dumps({'success': 'false', 'message': 'file format error'})
@@ -61,6 +60,17 @@ def upload():
         'comment': parts[3]
     }})
 
+def strB2Q(uchar):
+    """把字符串半角转全角"""
+    inside_code=ord(uchar)
+    code = inside_code
+    if inside_code<0x0020 or inside_code>0x7e:      #不是半角字符就返回原来的字符
+        code = inside_code
+    if inside_code==0x0020: #除了空格其他的全角半角的公式为:半角=全角-0xfee0
+        code = 0x3000
+    
+    code = inside_code + 0xfee0
+    return unichr(code)
 
 def translate(origin_text):
     """
@@ -68,8 +78,5 @@ def translate(origin_text):
     :param origin_text:
     :return:
     """
-    final_text = origin_text
-    for (key, value) in CHAR_FILTER_MAP.items():
-        final_text = final_text.replace(key, value)
 
-    return final_text
+    return u''.join(origin_text.map( lambda uc: strB2Q(uc) )
