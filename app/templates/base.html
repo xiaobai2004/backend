@@ -55,26 +55,6 @@
 
     {% block page_content %}{% endblock %}
 </div>
-<script>
-    $(function(){
-        $("#uploadBtn").on('click', function(){
-            var formData = new FormData();
-            formData.append('file', $('#uploadFile')[0].files[0]);
-            $.ajax({
-                url: "{{ url_for('main.upload') }}",
-                type: 'POST',
-                cache: false,
-                data: formData,
-                processData: false,
-                contentType: false
-            }).done(function(res) {
-                var data = JSON.parse(res)
-                var origin = JSON.stringify(data.parts.origin).replace(/\\r\\n/g, '<br/>')
-                $("#origin").val(origin);
-            }).fail(function(res) {});
-        })
-    })
-</script>
 {% endblock %}
 
 {% block scripts %}
