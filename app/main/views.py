@@ -9,11 +9,8 @@ from .forms import NameForm
 import json
 import re
 import chardet
-<<<<<<< HEAD
 from global_vars import CHAR_FILTER_MAP
 from global_vars import CHAR_SPLIT_REGEX
-=======
->>>>>>> a56ec8ac3c999cba7198398609cc6d50e8c4887f
 
 seq = 0
 
@@ -71,14 +68,24 @@ def convert():
     params = request.args.to_dict()
     result = []
 
-    params['original_text']
+    origin_list = re.split(re.compile(CHAR_SPLIT_REGEX), params['original_text'])
+    vernacular_list = re.split(re.compile(CHAR_SPLIT_REGEX), params['vernacular_text'])
+    comment_list = re.split(re.compile(CHAR_SPLIT_REGEX), params['comment'])
+    comment_map = {}
+    for comment in comment_list:
+        comment_parts = re.split(re.compile(u':|：'), comment)
+        comment_map[comment_parts[0]] = comment_parts[1]
+
+    for index, origin in enumerate(origin_list):
+        result.append({
+            "original_text": origin,
+            "vernacular_text": vernacular_list
+        })
+
+
 
     for (text_type, text) in params:
         result[text_type] = re.split(re.compile(CHAR_SPLIT_REGEX), text)
-
-
-
-def split(text):
 
 
 def strB2Q(uchar):
