@@ -73,13 +73,14 @@ def convert():
     vernacular_list = re.split(re.compile(CHAR_SPLIT_REGEX), params['vernacular_text'])
     comment_list = re.split(re.compile(CHAR_SPLIT_REGEX), params['comment'])
     comment_map = {}
-    # count = 0
     # for comment in comment_list:
-    #     count += 1
-    #     print count
+    #     if len(comment) == 0:
+    #         continue
     #     comment_parts = re.split(re.compile(u'：'), comment)
     #     print comment_parts
     #     comment_map[comment_parts[0]] = comment_parts[1]
+
+
 
     for idx, origin in enumerate(origin_list):
         result.append({
@@ -88,13 +89,13 @@ def convert():
             "comment": get_line_contains_comment(origin, comment_map)
         })
 
-    print result[0]
     return json.dumps({"success": "true", "formatData": result})
 
 
 def get_line_contains_comment(origin, comment_map):
     res = {}
-    for (key, value) in comment_map:
+    for (key, value) in comment_map.items():
+        print
         if key in origin and key not in res:
             res[key] = value
     return res
