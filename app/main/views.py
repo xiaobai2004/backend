@@ -68,22 +68,12 @@ def convert():
     params = request.args.to_dict()
     result = []
 
-    origin_list = re.split(re.compile(CHAR_SPLIT_REGEX), params['original_text'])
     vernacular_list = re.split(re.compile(CHAR_SPLIT_REGEX), params['vernacular_text'])
     comment_list = re.split(re.compile(CHAR_SPLIT_REGEX), params['comment'])
     comment_map = {}
     for comment in comment_list:
         comment_parts = re.split(re.compile(u':|：'), comment)
         comment_map[comment_parts[0]] = comment_parts[1]
-
-    # for idx, origin in enumerate(origin_list):
-    #     result.append({
-    #         "original_text": origin,
-    #         "vernacular_text": vernacular_list[idx],
-    #         "comment":
-    #     })
-
-
 
     for (text_type, text) in params:
         result[text_type] = re.split(re.compile(CHAR_SPLIT_REGEX), text)
@@ -111,4 +101,7 @@ def translate(origin_text):
     :param origin_text:
     :return:
     """
-    return u''.join(filter(lambda uc: uc if strB2Q(u' ') != uc else u'', map(lambda uc: strB2Q(uc), origin_text)))
+    rel = [strB2Q(uc) for uc in origin_text if strB2Q(uc) != strB2Q(u' ')]
+    rel = u''.join(rel)
+    return re.sub(re.compile('(\r\n)+|(\n)+'), '\r\n' + strB2Q((u' ') + strB2Q(u' '), rel)
+    
