@@ -36,13 +36,10 @@
     </div>
 <div id="edit_area" style=";margin-bottom:10px;">
     <textarea id="original_text" class="form-control text" rows="10">
-        This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text.
     </textarea>
     <textarea id="vernacular_text" class="form-control text" rows="10">
-        This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text.
     </textarea>
     <textarea id="comment" class="form-control comment_text " rows="10">
-        This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text.
     </textarea>
 </div>
 <h3>生成表格</h3>
@@ -56,71 +53,6 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>This is some text.</td>
-                <td>This is some text.</td>
-                <td>This is some text.</td>
-            </tr>
-            <tr>
-                <td>This is some text.</td>
-                <td>This is some text.</td>
-                <td>This is some text.</td>
-            </tr>
-            <tr>
-                <td>This is some text.</td>
-                <td>This is some text.</td>
-                <td>This is some text.</td>
-            </tr>
-            <tr>
-                <td>This is some text.</td>
-                <td>This is some text.</td>
-                <td>This is some text.</td>
-            </tr>
-            <tr>
-                <td>This is some text.</td>
-                <td>This is some text.</td>
-                <td>This is some text.</td>
-            </tr>
-            <tr>
-                <td>This is some text.</td>
-                <td>This is some text.</td>
-                <td>This is some text.</td>
-            </tr>
-            <tr>
-                <td>This is some text.</td>
-                <td>This is some text.</td>
-                <td>This is some text.</td>
-            </tr>
-            <tr>
-                <td>This is some text.</td>
-                <td>This is some text.</td>
-                <td>This is some text.</td>
-            </tr>
-        <tr>
-                <td>This is some text.</td>
-                <td>This is some text.</td>
-                <td>This is some text.</td>
-            </tr>
-            <tr>
-                <td>This is some text.</td>
-                <td>This is some text.</td>
-                <td>This is some text.</td>
-            </tr>
-            <tr>
-                <td>This is some text.</td>
-                <td>This is some text.</td>
-                <td>This is some text.</td>
-            </tr>
-            <tr>
-                <td>This is some text.</td>
-                <td>This is some text.</td>
-                <td>This is some text.</td>
-            </tr>
-            <tr>
-                <td>This is some text.</td>
-                <td>This is some text.</td>
-                <td>This is some text.</td>
-            </tr>
         </tbody>
     </table>
 </div>
@@ -130,13 +62,9 @@
 {% block subscripts %}
 <script>
 $(document).ready(function(){
-  $("#original_text").scroll(function() {
-     var height = $(this)[0].scrollHeight - $(this).outerHeight();
-     var current = $(this).scrollTop()/height;
-     scrollByOriginal_text("vernacular_text",current);
-     scrollByOriginal_text("comment",current);
-     scrollByOriginal_text("text_lines",current);
-  });
+  textAreaDataInit();
+  textAreaScrollBind();
+  textAreaChangeBind();
   $('#uploadFile').on("change", function(e){
         var name = e.currentTarget.files[0].name;
         $("#fileName").text(name);
@@ -167,12 +95,40 @@ $(document).ready(function(){
   $("#uploadBtn").on('click', function(e){
         e.preventDefault();
         $('#uploadFile').trigger('click');
-    })
+  });
 });
-function scrollByOriginal_text(id,current){
-    var elem = $(`#${id}`);
-    var maxHeight = elem[0].scrollHeight -elem.outerHeight();
-    elem.scrollTop(maxHeight*current);
+function textAreaDataInit(){
+    $("textarea").each(function(){
+        var id = $(this).attr("id");
+        if(id in localStorage){
+            $(this).val(localStorage[`${id}`]);
+        }else{
+            localStorage.setItem(id,$(this).val());
+        }
+    });
+}
+function textAreaScrollBind(){
+   function scrollByOriginal_text(id,current){
+        var elem = $(`#${id}`);
+        var maxHeight = elem[0].scrollHeight -elem.outerHeight();
+        elem.scrollTop(maxHeight*current);
+    }
+   $("#original_text").scroll(function() {
+        var height = $(this)[0].scrollHeight - $(this).outerHeight();
+        var current = $(this).scrollTop()/height;
+        scrollByOriginal_text("vernacular_text",current);
+        scrollByOriginal_text("comment",current);
+        scrollByOriginal_text("text_lines",current);
+  });
+}
+
+function textAreaChangeBind(){
+    $("textarea").each(function(){
+        $(this).on('input propertychange', function() {
+            var id=$(this).attr("id");
+            localStorage.setItem(id,$(this).val());
+        });
+    });
 }
 </script>
 {% endblock %}
