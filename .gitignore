@@ -29,4 +29,5 @@ node_modules
 *.iml
 .idea/
 
+venv/
 *.pyc
