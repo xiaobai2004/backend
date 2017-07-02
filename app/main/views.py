@@ -45,7 +45,7 @@ def upload():
     print len(parts)
     print parts
     if len(parts) < 4 or len(parts) > 5: 
-        return json.dumps({'success': 'false', 'message': 'file format error'})
+        return json.dumps({'success': 'false', 'message': u'未找到合适的分隔符：【原典】，【白话语译】，【注释】'})
 
     title = translate(parts[0])
     origin = translate(parts[1])

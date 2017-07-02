@@ -5,9 +5,12 @@
 
 {% block css_styles %}
 <style type="text/css">
+    .container{
+       width: 99%;
+    }
     .text{
-        margin-right:4%;
-        width:35%;
+        margin-right:1%;
+        width:38%;
         overflow:auto;
         display:inline
     }
@@ -44,11 +47,11 @@
     <button id="exportBtn" class="btn btn-primary btn-right" type="button">导出</button>
 </div>
 <div id="edit_area" style=";margin-bottom:10px;">
-    <textarea id="original_text" class="form-control text" rows="10">
+    <textarea id="original_text" class="form-control text" rows="20">
     </textarea>
-    <textarea id="vernacular_text" class="form-control text" rows="10">
+    <textarea id="vernacular_text" class="form-control text" rows="20">
     </textarea>
-    <textarea id="comment" class="form-control comment_text " rows="10">
+    <textarea id="comment" class="form-control comment_text " rows="20">
     </textarea>
 </div>
 <h3>生成表格</h3>
@@ -101,9 +104,7 @@ function uploadFile(){
                 $("#original_text").val(origin);
                 $("#vernacular_text").val(vernacular);
                 $("#comment").val(comment);
-                localStorage.setItem("original_text",origin);
-                localStorage.setItem("vernacular_text",origin);
-                localStorage.setItem("comment",origin);
+                localStorageRefresh($("#fileName").text(),origin,vernacular,comment);
             } else {
                 alert(data.message);
             }
@@ -153,6 +154,9 @@ function textAreaDataInit(){
             localStorage.setItem(id,$(this).val());
         }
     });
+    if("file_name" in localStorage){
+        $("#fileName").html(localStorage.file_name);
+    }
 }
 function textAreaScrollBind(){
    function scrollByOriginal_text(id,current){
@@ -176,6 +180,12 @@ function textAreaChangeBind(){
             localStorage.setItem(id,$(this).val());
         });
     });
+}
+function localStorageRefresh(file_name,original_text,vernacular_text,comment){
+    localStorage.setItem("file_name",file_name);
+    localStorage.setItem("original_text",original_text);
+    localStorage.setItem("vernacular_text",vernacular_text);
+    localStorage.setItem("comment",comment);
 }
 </script>
 {% endblock %}
