@@ -48,10 +48,11 @@ def upload():
     print len(parts)
     if len(parts) != 4:
         return json.dumps({'success': 'false', 'message': 'file format error'})
-    title = parts[0]
-    origin = parts[1]
-    vernacular = parts[2]
-    comment = parts[3]
+
+    title = translate(parts[0])
+    origin = translate(parts[1])
+    vernacular = translate(parts[2])
+    comment = translate(parts[3])
 
     return json.dumps({'success': 'true', 'parts': {
         'title': parts[0],
@@ -67,5 +68,8 @@ def translate(origin_text):
     :param origin_text:
     :return:
     """
-    for key, value in CHAR_FILTER_MAP:
-        origin_text = origin_text.replace(key, value)
+    final_text = origin_text
+    for (key, value) in CHAR_FILTER_MAP.items():
+        final_text = final_text.replace(key, value)
+
+    return final_text
