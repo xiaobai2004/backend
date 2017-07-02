@@ -95,7 +95,7 @@ function clickDownload(aLink){
         str+=rowList.join(",")+"\n";
      });
      str =  encodeURIComponent(str);
-     aLink.href = "data:text/csv;charset=utf-8,\ufeff"+str;
+     aLink.href = "data:text/csv;charset=gbk,\ufeff"+str;
 }
 function uploadFile(){
     $('#uploadFile').on("change", function(e){
