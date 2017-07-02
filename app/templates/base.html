@@ -9,6 +9,7 @@
 
 <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-theme.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
 <script src="{{ url_for('static', filename='jquery-3.2.1.min.js') }}"></script>
 <script src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
 
@@ -31,6 +32,16 @@
                 <li><a href="{{ url_for('main.index') }}">Home</a></li>
             </ul>
         </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li>
+                    <form id="uploadForm" action="{{ url_for('main.upload') }}" method="post" enctype=multipart/form-data>
+                        <input id="uploadFile" type=file name=file>
+                        <input id="uploadBtn" type=submit value=Upload>
+                    </form>
+                </li>
+            </ul>
+        </div>
     </div>
 </div>
 {% endblock %}
@@ -46,6 +57,9 @@
 
     {% block page_content %}{% endblock %}
 </div>
+<script>
+
+</script>
 {% endblock %}
 
 {% block scripts %}
