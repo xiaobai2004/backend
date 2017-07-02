@@ -6,21 +6,19 @@
 {% block css_styles %}
 <style type="text/css">
     .text{
-        float:left;
-        margin-right:5%;
-        margin-bottom:10px;
-        border:1px solid black;
+        margin-right:4%;
         width:35%;
-        height:200px;
-        overflow:auto
+        overflow:auto;
+        display:inline
     }
     .comment_text{
-        float:left;
-        margin-bottom:10px;
-        border:1px solid black;
         width:20%;
-        height:200px;
-        overflow:auto
+        overflow:auto;
+        display:inline
+    }
+    #text_lines{
+        overflow: auto;
+        height: 300px;
     }
 </style>
 {% endblock %}
@@ -30,25 +28,97 @@
         <input id="uploadFile" type="file" name=file/>
         <button id="uploadBtn" type="button">上传</button>
     </div>
-    <div id="original_text" class="text">
+<div id="edit_area" style=";margin-bottom:10px;">
+    <textarea id="original_text" class="form-control text" rows="10">
         This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text.
-    </div>
-    <div id="vernacular_text" class="text">
+    </textarea>
+    <textarea id="vernacular_text" class="form-control text" rows="10">
         This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text.
-    </div>
-    <div id="comment" class="comment_text">
+    </textarea>
+    <textarea id="comment" class="form-control comment_text " rows="10">
         This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text.
-    </div>
-    <div id="original_lines" class="text">
-        This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text.
-    </div>
-    <div id="vernacular_lines" class="text">
-        This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text.
-    </div>
+    </textarea>
+</div>
+<h3>生成表格</h3>
+<div id="text_lines" >
+     <table class="table table-striped table-condensed">
+        <thead>
+            <tr>
+                <td>原文</td>
+                <td>白话文</td>
+                <td>注释</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>This is some text.</td>
+                <td>This is some text.</td>
+                <td>This is some text.</td>
+            </tr>
+            <tr>
+                <td>This is some text.</td>
+                <td>This is some text.</td>
+                <td>This is some text.</td>
+            </tr>
+            <tr>
+                <td>This is some text.</td>
+                <td>This is some text.</td>
+                <td>This is some text.</td>
+            </tr>
+            <tr>
+                <td>This is some text.</td>
+                <td>This is some text.</td>
+                <td>This is some text.</td>
+            </tr>
+            <tr>
+                <td>This is some text.</td>
+                <td>This is some text.</td>
+                <td>This is some text.</td>
+            </tr>
+            <tr>
+                <td>This is some text.</td>
+                <td>This is some text.</td>
+                <td>This is some text.</td>
+            </tr>
+            <tr>
+                <td>This is some text.</td>
+                <td>This is some text.</td>
+                <td>This is some text.</td>
+            </tr>
+            <tr>
+                <td>This is some text.</td>
+                <td>This is some text.</td>
+                <td>This is some text.</td>
+            </tr>
+        <tr>
+                <td>This is some text.</td>
+                <td>This is some text.</td>
+                <td>This is some text.</td>
+            </tr>
+            <tr>
+                <td>This is some text.</td>
+                <td>This is some text.</td>
+                <td>This is some text.</td>
+            </tr>
+            <tr>
+                <td>This is some text.</td>
+                <td>This is some text.</td>
+                <td>This is some text.</td>
+            </tr>
+            <tr>
+                <td>This is some text.</td>
+                <td>This is some text.</td>
+                <td>This is some text.</td>
+            </tr>
+            <tr>
+                <td>This is some text.</td>
+                <td>This is some text.</td>
+                <td>This is some text.</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
-    <div id="comment_lines"  class="comment_text">
-        This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text.
-    </div>
 {% endblock %}
 
 {% block subscripts %}
@@ -57,7 +127,9 @@ $(document).ready(function(){
   $("#original_text").scroll(function() {
      var height = $(this)[0].scrollHeight - $(this).outerHeight();
      var current = $(this).scrollTop()/height;
-     console.log(current);
+     scrollByOriginal_text("vernacular_text",current);
+     scrollByOriginal_text("comment",current);
+     scrollByOriginal_text("text_lines",current);
   });
   $("#uploadBtn").on('click', function(){
         var formData = new FormData();
@@ -80,5 +152,10 @@ $(document).ready(function(){
         }).fail(function(res) {});
     })
 });
+function scrollByOriginal_text(id,current){
+    var elem = $(`#${id}`);
+    var maxHeight = elem[0].scrollHeight -elem.outerHeight();
+    elem.scrollTop(maxHeight*current);
+}
 </script>
 {% endblock %}
