@@ -44,21 +44,26 @@ def upload():
     #     'origin': origin_content
     # }})
     # print chardet.detect(origin_content)
-    parts = re.split(re.compile(u'【原典】|【白话语译】|【注释】'), origin_content)
+    parts = re.split(re.compile(u'【原典】|【白话语译】|【注释】|【校勘】'), origin_content)
     print len(parts)
-    if len(parts) != 4:
+    print parts
+    if len(parts) < 4 or len(parts) > 5 :
         return json.dumps({'success': 'false', 'message': 'file format error'})
 
     title = translate(parts[0])
     origin = translate(parts[1])
     vernacular = translate(parts[2])
     comment = translate(parts[3])
+    collation = ''
+    if len(parts) == 5:
+        collation = translate(parts[4])
 
     return json.dumps({'success': 'true', 'parts': {
-        'title': parts[0],
-        'origin': parts[1],
-        'vernacular': parts[2],
-        'comment': parts[3]
+        'title': title,
+        'origin': origin,
+        'vernacular': vernacular,
+        'comment': comment,
+        'collation': collation
     }})
 
 
