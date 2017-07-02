@@ -16,19 +16,6 @@ def get_config(key):
     timeout = TabConfig.query.filter_by( key='biaodian/execise/time_limit').first().value
     return int(timeout)
 
-@main.route('/config/<path:key>', methods=['POST'] )
-def set_config(key):
-    if key not in [ '', ]:
-    value = None
-    try:
-        value=int(request.data)
-    exept:
-        abort(401)
-
-    timeout = TabConfig.query.filter_by( key='biaodian/execise/time_limit').first().value
-    return int(timeout)
-
-
 @main.route('/', methods=['GET', 'POST'])
 def index():
     content=u""" { "开始一个新的测试": {
