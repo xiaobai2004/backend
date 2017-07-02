@@ -3,15 +3,13 @@
 {% block title %}Flasky{% endblock %}
 
 {% block head %}
-{{ super() }}
 <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 
 <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-theme.min.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
-<script src="{{ url_for('static', filename='jquery-3.2.1.min.js') }}"></script>
-<script src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
+{% block css_styles %}
+{% endblock %}
 
 {% endblock %}
 
@@ -57,12 +55,11 @@
 
     {% block page_content %}{% endblock %}
 </div>
-<script>
-
-</script>
 {% endblock %}
 
 {% block scripts %}
-{{ super() }}
-{{ moment.include_moment() }}
+<script src="{{ url_for('static', filename='jquery-3.2.1.min.js') }}"></script>
+<script src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
+{% block subscripts %}
+{% endblock %}
 {% endblock %}
