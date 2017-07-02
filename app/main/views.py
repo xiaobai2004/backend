@@ -96,6 +96,9 @@ def get_line_contains_comment(origin, comment_map):
     for (key, value) in comment_map.items():
         if key in origin and key not in res:
             res[key] = key + ":" + value
+
+    for (key, value) in res.items():
+        del comment_map[key]
     return res
 
 
