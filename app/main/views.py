@@ -69,6 +69,7 @@ def convert():
     params = request.json
     result = []
 
+    origin_list = re.split(re.compile(CHAR_SPLIT_REGEX), params['original_text'])
     vernacular_list = re.split(re.compile(CHAR_SPLIT_REGEX), params['vernacular_text'])
     comment_list = re.split(re.compile(CHAR_SPLIT_REGEX), params['comment'])
     comment_map = {}
