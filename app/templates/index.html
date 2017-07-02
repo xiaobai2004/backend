@@ -134,7 +134,7 @@ function convertBtnBind(){
                 tr.append("<td>"+ data[idx].vernacular_text +"</td>");
                 commentStr = "";
                 for (cidx in data[idx].comment){
-                    commentStr += data[idx].comment[cidx];
+                    commentStr += data[idx].comment[cidx] + ";";
                 }
                 tr.append("<td>"+ commentStr +"</td>");
                 $("#text_lines tbody").append(tr);
