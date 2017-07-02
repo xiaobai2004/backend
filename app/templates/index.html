@@ -93,9 +93,12 @@ $(document).ready(function(){
                 var origin = JSON.stringify(data.parts.origin);
                 var vernacular = JSON.stringify(data.parts.vernacular);
                 var comment = JSON.stringify(data.parts.comment);
-                $("#original_text").html(origin);
-                $("#vernacular_text").html(vernacular);
-                $("#comment").html(comment);
+                $("#original_text").val(origin);
+                $("#vernacular_text").val(vernacular);
+                $("#comment").val(comment);
+                localStorage.setItem("original_text",origin);
+                localStorage.setItem("vernacular_text",origin);
+                localStorage.setItem("comment",origin);
             } else {
                 alert(data.message);
             }
