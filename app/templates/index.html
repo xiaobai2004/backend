@@ -3,28 +3,58 @@
 
 {% block title %}Flasky{% endblock %}
 
-{% block page_content %}
-<div class="row">
-    <div class="col-md-4">
-        <textarea id="origin" rows="3" cols="20"></textarea>
-    </div>
-    <div class="col-md-4">
-        <textarea rows="3" cols="20"></textarea>
-    </div>
-    <div class="col-md-4">
-        <textarea rows="3" cols="20"></textarea>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-4">
-        <textarea rows="3" cols="20"></textarea>
-    </div>
-    <div class="col-md-4">
-        <textarea rows="3" cols="20"></textarea>
-    </div>
-    <div class="col-md-4">
-        <textarea rows="3" cols="20"></textarea>
-    </div>
-</div>
+{% block css_styles %}
+<style type="text/css">
+    .text{
+        float:left;
+        margin-right:5%;
+        margin-bottom:10px;
+        border:1px solid black;
+        width:35%;
+        height:200px;
+        overflow:auto
+    }
+    .comment_text{
+        float:left;
+        margin-bottom:10px;
+        border:1px solid black;
+        width:20%;
+        height:200px;
+        overflow:auto
+    }
+</style>
+{% endblock %}
 
+{% block page_content %}
+    <div id="original_text" class="text">
+        This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text.
+    </div>
+    <div id="vernacular_text" class="text">
+        This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text.
+    </div>
+    <div id="comment" class="comment_text">
+        This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text.
+    </div>
+    <div id="original_lines" class="text">
+        This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text.
+    </div>
+    <div id="vernacular_lines" class="text">
+        This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text.
+    </div>
+
+    <div id="comment_lines"  class="comment_text">
+        This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text. This is some text.
+    </div>
+{% endblock %}
+
+{% block subscripts %}
+<script>
+$(document).ready(function(){
+  $("#original_text").scroll(function() {
+     var height = $(this)[0].scrollHeight - $(this).outerHeight();
+     var current = $(this).scrollTop()/height;
+     console.log(current);
+  });
+});
+</script>
 {% endblock %}
