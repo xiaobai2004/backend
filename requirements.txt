@@ -21,3 +21,5 @@ httpie==0.9.9
 Flask-SSLify==0.1.4
 jsonlib==1.6.1
 requests==2.18.1
+jieba==0.38
+
