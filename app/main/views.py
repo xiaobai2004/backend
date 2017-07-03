@@ -11,6 +11,7 @@ import re
 import chardet
 from global_vars import CHAR_FILTER_MAP
 from global_vars import CHAR_SPLIT_REGEX
+import jieba
 
 seq = 0
 
@@ -122,4 +123,4 @@ def translate(origin_text):
     """
     rel = [strB2Q(uc) for uc in origin_text if strB2Q(uc) != strB2Q(u' ')]
     rel = u''.join(rel)
-    return re.sub(re.compile('(\r\n)+|(\n)+'), '\r\n' + strB2Q(u' ') + strB2Q(u' '), rel)
+    return u' - '.join(jieba.cut(rel))
