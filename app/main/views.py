@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import time
+import os
 from flask import render_template, session, request, redirect, url_for, current_app
 from .. import db
 from ..models import User, TabConfig
@@ -12,6 +13,12 @@ import chardet
 from global_vars import CHAR_FILTER_MAP
 from global_vars import CHAR_SPLIT_REGEX
 import jieba
+
+path=os.path.dirname(__file__)
+jieba.load_userdict(os.path.join(path, 'dict.simplified.txt'))
+assist_words = [u'与', u'且', u'之', u'为', u'乎', u'也', u'于', u'以', u'乃', u'其', u'则', u'因', u'所', u'焉', u'何', u'者', u'若', u'乎', u'而', u'之', ]
+wang_word =  u'王' 
+wangshecheng = u'王舍城'
 
 seq = 0
 
@@ -122,5 +129,6 @@ def translate(origin_text):
     :return:
     """
     rel = [strB2Q(uc) for uc in origin_text if strB2Q(uc) != strB2Q(u' ')]
+    
     rel = u''.join(rel)
     return u' - '.join(jieba.cut(rel))
