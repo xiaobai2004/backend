@@ -121,6 +121,7 @@ function uploadFile(){
                 $("#comment").val(comment);
                 $("#exportLink").attr("download",$("#fileName").text()+".csv");
                 localStorageRefresh($("#fileName").text(),origin,vernacular,comment);
+                document.cookie = "cookie_key="+data.cookie_key;
             } else {
                 alert(data.message);
             }

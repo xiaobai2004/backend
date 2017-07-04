@@ -1,30 +1,30 @@
 # -*- coding: utf-8 -*-
-import time
-import os
-from flask import render_template, session, request, redirect, url_for, current_app
-from .. import db
-from ..models import User, TabConfig
-from ..email import send_email
-from . import main
-from .forms import NameForm
 import json
+import os
 import re
-import chardet
-from global_vars import CHAR_FILTER_MAP
-from global_vars import CHAR_SPLIT_REGEX
-import jieba
+import time
+from datetime import datetime
 
-path=os.path.dirname(__file__)
+import jieba
+from flask import render_template, request
+
+from global_vars import CHAR_SPLIT_REGEX
+from global_vars import COOKIE_FILENAME_MAP
+from . import main
+from ..models import TabConfig
+
+path = os.path.dirname(__file__)
 jieba.load_userdict(os.path.join(path, 'dict.simplified.txt'))
-assist_words = [u'与', u'且', u'之', u'为', u'乎', u'也', u'于', u'以', u'乃', u'其', u'则', u'因', u'所', u'焉', u'何', u'者', u'若', u'乎', u'而', u'之', ]
-wang_word =  u'王' 
+assist_words = [u'与', u'且', u'之', u'为', u'乎', u'也', u'于', u'以', u'乃', u'其', u'则', u'因', u'所', u'焉', u'何', u'者', u'若',
+                u'乎', u'而', u'之', ]
+wang_word = u'王'
 wangshecheng = u'王舍城'
 
 seq = 0
 
 
 @main.route('/config/<path:key>', methods=['GET'])
-def get_config(key):
+def get_config():
     timeout = TabConfig.query.filter_by(key='biaodian/execise/time_limit').first().value
     return int(timeout)
 
@@ -48,6 +48,7 @@ def new_test(user):
 
 @main.route('/upload', methods=['POST'])
 def upload():
+    file_name = request.files['file'].filename
     origin_content = request.files['file'].stream.read().decode('gbk')
     parts = re.split(re.compile(u'【原典】|【白话语译】|【注释】|【校勘】'), origin_content)
     if len(parts) < 4 or len(parts) > 5:
@@ -61,13 +62,15 @@ def upload():
     if len(parts) == 5:
         collation = translate(parts[4])
 
-    return json.dumps({'success': 'true', 'parts': {
-        'title': title,
-        'origin': origin,
-        'vernacular': vernacular,
-        'comment': comment,
-        'collation': collation
-    }})
+    # may do
+    cookie_key = str(datetime.now().microsecond)
+    COOKIE_FILENAME_MAP[cookie_key] = file_name
+
+    return json.dumps({'success': 'true',
+                       'parts': {'title': title, 'origin': origin, 'vernacular': vernacular, 'comment': comment,
+                                 'collation': collation},
+                       'cookie_key': cookie_key
+                       })
 
 
 @main.route('/convert', methods=['POST'])
@@ -88,6 +91,10 @@ def convert():
             continue
         comment_map[comment_parts[0].strip()] = comment_parts[1].strip()
 
+    cookie_key = str(request.cookies["cookie_key"])
+    if cookie_key in COOKIE_FILENAME_MAP:
+        # todo
+        print COOKIE_FILENAME_MAP[cookie_key]
 
     for idx, origin in enumerate(origin_list):
         result.append({
@@ -114,13 +121,14 @@ def strB2Q(uchar):
     """把字符串半角转全角"""
     inside_code = ord(uchar)
     code = inside_code
-    if inside_code < 0x0020 or inside_code > 0x7e:      #不是半角字符就返回原来的字符
+    if inside_code < 0x0020 or inside_code > 0x7e:  # 不是半角字符就返回原来的字符
         code = inside_code
-    elif inside_code == 0x0020: #除了空格其他的全角半角的公式为:半角=全角-0xfee0
+    elif inside_code == 0x0020:  # 除了空格其他的全角半角的公式为:半角=全角-0xfee0
         code = 0x3000
     else:
         code = inside_code + 0xfee0
     return unichr(code)
+
 
 def translate(origin_text):
     """
@@ -129,6 +137,6 @@ def translate(origin_text):
     :return:
     """
     rel = [strB2Q(uc) for uc in origin_text if strB2Q(uc) != strB2Q(u' ')]
-    
+
     rel = u''.join(rel)
     return u' - '.join(jieba.cut(rel))
