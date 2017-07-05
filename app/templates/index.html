@@ -5,6 +5,10 @@
 
 {% block css_styles %}
 <style type="text/css">
+
+    .title {
+        font-size:48 
+    }
     .container{
        width: 99%;
     }
@@ -21,33 +25,48 @@
     }
     #text_lines{
         overflow: auto;
-        height: 480x;
-        margin-bottom: 50px
+        height: 480px;
+        margin-bottom: 10px
     }
     #uploadFile{
         display:none;
     }
     .btn-right-first{
-        margin-left: 82%;
+        float:right
     }
     .btn-right{
         margin-left: 10px;
+        float:right
     }
+    
     #uploadForm{
-        margin-bottom: 5%;
+        margin-bottom: 10px;
+        align:right
+    }
+    .Row
+    {
+        display: table;
+        width: 99%; /*Optional*/
+        table-layout: fixed; /*Optional*/
+    }
+    .Column
+    {
+        display: table-cell;
     }
 </style>
 {% endblock %}
 
 {% block page_content %}
-<div id="uploadForm">
-    <div class="h2 text-center" id="fileName"></div>
-    <input id="uploadFile" type="file" name=file/>
-    <button id="uploadBtn" class="btn btn-primary btn-right-first" type="button">上传</button>
-    <button id="convertBtn" class="btn btn-primary btn-right" type="button">转换</button>
+<div id="uploadForm" class="Row">
+    <div class="Column h3"  float="left" id="fileName"></div>
+    <div class="Column">
     <a id="exportLink" onclick="clickDownload(this)" href="#">
         <button id="exportBtn" class="btn btn-primary btn-right buttons-excel" type="button" >导出</button>
     </a>
+    <button id="convertBtn" class="btn btn-primary btn-right" type="button">转换</button>
+    <button id="uploadBtn" class="btn btn-primary btn-right-first" type="button">上传</button>
+    <input id="uploadFile" type="file" name=file/>
+    </div>
 </div>
 <div id="edit_area" style=";margin-bottom:10px;">
     <textarea id="original_text" class="form-control text" rows="20">
@@ -57,7 +76,6 @@
     <textarea id="comment" class="form-control comment_text " rows="20">
     </textarea>
 </div>
-<h3>生成表格</h3>
 <div id="text_lines" >
      <table class="table table-striped table-condensed table-bordered table-hover">
         <thead>

@@ -22,4 +22,4 @@ Flask-SSLify==0.1.4
 jsonlib==1.6.1
 requests==2.18.1
 jieba==0.38
-
+XlsxWriter==0.9.8
