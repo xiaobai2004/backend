@@ -14,11 +14,24 @@ from global_vars import CHAR_FILTER_MAP
 from global_vars import CHAR_SPLIT_REGEX
 import jieba
 
+def strB2Q(uchar):
+    """把字符串半角转全角"""
+    inside_code = ord(uchar)
+    code = inside_code
+    if inside_code < 0x0020 or inside_code > 0x7e:      #不是半角字符就返回原来的字符
+        code = inside_code
+    elif inside_code == 0x0020: #除了空格其他的全角半角的公式为:半角=全角-0xfee0
+        code = 0x3000
+    else:
+        code = inside_code + 0xfee0
+    return unichr(code)
+
+
 path=os.path.dirname(__file__)
 jieba.load_userdict(os.path.join(path, 'dict.simplified.txt'))
-assist_words = [u'与', u'且', u'之', u'为', u'乎', u'也', u'于', u'以', u'乃', u'其', u'则', u'因', u'所', u'焉', u'何', u'者', u'若', u'乎', u'而', u'之', ]
-wang_word =  u'王' 
-wangshecheng = u'王舍城'
+white_spaces = set([ strB2Q(u' '), strB2Q(u'\r'), strB2Q(u'\n'), strB2Q(u'\t') ])
+assist_words = set([ strB2Q(' '), u'\r', u'\n', u'虽', u'昔', u'及', u'与', u'且', u'之', u'为', u'乎', u'也', u'于', u'以', u'乃', u'其', u'则', u'因', u'所', u'焉', u'何', u'者', u'若', u'乎', u'而', u'之', u'能', u'所', u'王'])
+
 
 seq = 0
 
@@ -58,6 +71,7 @@ def upload():
     vernacular = translate(parts[2])
     comment = translate(parts[3])
     collation = ''
+
     if len(parts) == 5:
         collation = translate(parts[4])
 
@@ -75,8 +89,32 @@ def convert():
     params = request.json
     result = []
 
+    origin_set = [ w for w in set(jieba.cut(params['original_text'])) ]
+    vernacular_set = [ w for w in set(jieba.cut(params['vernacular_text'])) ]
+
+    origin_set = origin_set.intersection( vernacular_set )
+    origin_set = None
+    vernacular_set = None
+
     origin_list = re.split(re.compile(CHAR_SPLIT_REGEX), params['original_text'])
     vernacular_list = re.split(re.compile(CHAR_SPLIT_REGEX), params['vernacular_text'])
+    idx_in_baihua=0
+    for wenyanwen in origin_list:
+        if idx_in_baihua >= len( vernacular_list ):
+            break
+        begin = idx_in_baihua
+        words = [ w for w in jieba.cut( wenyanwen ) if w in origin_set ]
+        while len( words ) != 0:
+            for word in words:
+                if word in vernacular_list[idx_in_baihua]:
+                    del words[0]
+                else:
+                    idx_in_baihua += 1
+        merged_baihua = u''.join( vernacular_list[begin:idx_in_baihua + 1 ] )
+        vernacular_list[begin] = merged_baihua
+        del vernacular_list[begin+1:idx_in_baihua+1]
+                
+        
     comment_list = re.split(re.compile(CHAR_SPLIT_REGEX), params['comment'])
     comment_map = {}
     for comment in comment_list:
@@ -110,17 +148,6 @@ def get_line_contains_comment(origin, comment_map):
     return res
 
 
-def strB2Q(uchar):
-    """把字符串半角转全角"""
-    inside_code = ord(uchar)
-    code = inside_code
-    if inside_code < 0x0020 or inside_code > 0x7e:      #不是半角字符就返回原来的字符
-        code = inside_code
-    elif inside_code == 0x0020: #除了空格其他的全角半角的公式为:半角=全角-0xfee0
-        code = 0x3000
-    else:
-        code = inside_code + 0xfee0
-    return unichr(code)
 
 def translate(origin_text):
     """
@@ -128,7 +155,7 @@ def translate(origin_text):
     :param origin_text:
     :return:
     """
-    rel = [strB2Q(uc) for uc in origin_text if strB2Q(uc) != strB2Q(u' ')]
+    rel = [strB2Q(uc) for uc in origin_text  if strB2Q(uc) not in white_spaces ]
+
     
-    rel = u''.join(rel)
-    return u' - '.join(jieba.cut(rel))
+    return u''.join(rel)
