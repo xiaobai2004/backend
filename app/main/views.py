@@ -107,7 +107,8 @@ def convert():
     cookie_key = str(request.cookies["cookie_key"])
     if cookie_key in COOKIE_FILENAME_MAP:
         # todo
-        print COOKIE_FILENAME_MAP[cookie_key]
+        #print COOKIE_FILENAME_MAP[cookie_key]
+        pass
 
     for idx, origin in enumerate(origin_list):
         if idx >= len( vernacular_list ):
