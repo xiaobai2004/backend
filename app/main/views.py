@@ -65,10 +65,10 @@ def upload():
     if len(parts) < 4 or len(parts) > 5:
         return json.dumps({'success': 'false', 'message': u'未找到合适的分隔符：【原典】，【白话语译】，【注释】'})
 
-    title = translate(parts[0])
-    origin = translate(parts[1])
-    vernacular = translate(parts[2])
-    comment = translate(parts[3])
+    title = u''.join(translate(parts[0]))
+    origin = devide(translate(parts[1]))
+    vernacular = devide(translate(parts[2]))
+    comment =  u''.join([strB2Q(uc) for uc in parts[3]  if strB2Q(uc) not in [ strB2Q(u' '), strB2Q(u'\t') ]])
     collation = ''
 
     if len(parts) == 5:
@@ -90,33 +90,10 @@ def convert():
     params = request.json
     result = []
 
-    origin_set = [ w for w in set(jieba.cut(params['original_text'])) ]
-    vernacular_set = [ w for w in set(jieba.cut(params['vernacular_text'])) ]
-
-    origin_set = origin_set.intersection( vernacular_set )
-    origin_set = None
-    vernacular_set = None
-
-    origin_list = re.split(re.compile(CHAR_SPLIT_REGEX), params['original_text'])
-    vernacular_list = re.split(re.compile(CHAR_SPLIT_REGEX), params['vernacular_text'])
-    idx_in_baihua=0
-    for wenyanwen in origin_list:
-        if idx_in_baihua >= len( vernacular_list ):
-            break
-        begin = idx_in_baihua
-        words = [ w for w in jieba.cut( wenyanwen ) if w in origin_set ]
-        while len( words ) != 0:
-            for word in words:
-                if word in vernacular_list[idx_in_baihua]:
-                    del words[0]
-                else:
-                    idx_in_baihua += 1
-        merged_baihua = u''.join( vernacular_list[begin:idx_in_baihua + 1 ] )
-        vernacular_list[begin] = merged_baihua
-        del vernacular_list[begin+1:idx_in_baihua+1]
-                
+    origin_list = re.split(re.compile( u'[\r\n]+' ), params['original_text'])
+    vernacular_list = re.split(re.compile(u'[\r\n]+'), params['vernacular_text'])
         
-    comment_list = re.split(re.compile(CHAR_SPLIT_REGEX), params['comment'])
+    comment_list = re.split(re.compile(u'[\r\n]+'), params['comment'])
     comment_map = {}
     for comment in comment_list:
 
@@ -125,7 +102,7 @@ def convert():
         comment_parts = re.split(re.compile(u'：'), comment)
         if len(comment_parts) != 2:
             continue
-        comment_map[comment_parts[0].strip()] = comment_parts[1].strip()
+        comment_map[comment_parts[0].strip()] = comment
 
     cookie_key = str(request.cookies["cookie_key"])
     if cookie_key in COOKIE_FILENAME_MAP:
@@ -133,6 +110,8 @@ def convert():
         print COOKIE_FILENAME_MAP[cookie_key]
 
     for idx, origin in enumerate(origin_list):
+        if idx >= len( vernacular_list ):
+            break
         result.append({
             "original_text": origin,
             "vernacular_text": vernacular_list[idx],
@@ -143,14 +122,17 @@ def convert():
 
 
 def get_line_contains_comment(origin, comment_map):
-    res = {}
-    for (key, value) in comment_map.items():
-        if key in origin and key not in res:
-            res[key] = key + ":" + value
+    res = {} 
+    for key in comment_map:
+        if key in origin:
+            res[key] = comment_map[key]
 
-    for (key, value) in res.items():
+    for key in res:
         del comment_map[key]
-    return res
+    rel = u'' 
+    for key in res:
+        rel += res[key] + strB2Q( u' ' ) 
+    return u'\r\n'.join( res.values())
 
 
 def translate(origin_text):
@@ -159,5 +141,28 @@ def translate(origin_text):
     :param origin_text:
     :return:
     """
-    rel = [strB2Q(uc) for uc in origin_text  if strB2Q(uc) not in white_spaces ]
+    return [strB2Q(uc) for uc in origin_text  if strB2Q(uc) not in white_spaces ]
+
+def devide( paragraph ):
+    rel = []
+    max_len = len( paragraph )
+    curr_idx = 0
+    while curr_idx < len( paragraph ):
+        idx = find_next_split_point( paragraph, curr_idx )
+        rel.append(  u''.join( paragraph[curr_idx:idx + 1]) + u'\r\n\r\n')
+        curr_idx = idx + 1
     return u''.join(rel)
+        
+
+def find_next_split_point( paragraph, begin_idx ):
+    idx = begin_idx
+    while idx < len( paragraph ):
+        if CHAR_SPLIT_REGEX.match(paragraph[idx]):
+            
+            if idx + 1 < len( paragraph ) and paragraph[idx+1] in [ u'’', u'”' ]:
+                idx += 1
+            return idx
+        idx += 1
+
+    return idx
+            
