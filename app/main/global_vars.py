@@ -5,3 +5,5 @@ CHAR_FILTER_MAP = {
 }
 
 CHAR_SPLIT_REGEX = u'。|！|；|：'
+
+COOKIE_FILENAME_MAP = {}

@@ -1,18 +1,16 @@
 # -*- coding: utf-8 -*-
-import time
-import os
-from flask import render_template, session, request, redirect, url_for, current_app
-from .. import db
-from ..models import User, TabConfig
-from ..email import send_email
-from . import main
-from .forms import NameForm
 import json
+import os
 import re
-import chardet
-from global_vars import CHAR_FILTER_MAP
+import time
+from datetime import datetime
+
 from global_vars import CHAR_SPLIT_REGEX
+from global_vars import COOKIE_FILENAME_MAP
+from . import main
+from ..models import TabConfig
 import jieba
+from flask import render_template, request
 
 def strB2Q(uchar):
     """把字符串半角转全角"""
@@ -37,7 +35,7 @@ seq = 0
 
 
 @main.route('/config/<path:key>', methods=['GET'])
-def get_config(key):
+def get_config():
     timeout = TabConfig.query.filter_by(key='biaodian/execise/time_limit').first().value
     return int(timeout)
 
@@ -61,6 +59,7 @@ def new_test(user):
 
 @main.route('/upload', methods=['POST'])
 def upload():
+    file_name = request.files['file'].filename
     origin_content = request.files['file'].stream.read().decode('gbk')
     parts = re.split(re.compile(u'【原典】|【白话语译】|【注释】|【校勘】'), origin_content)
     if len(parts) < 4 or len(parts) > 5:
@@ -75,13 +74,15 @@ def upload():
     if len(parts) == 5:
         collation = translate(parts[4])
 
-    return json.dumps({'success': 'true', 'parts': {
-        'title': title,
-        'origin': origin,
-        'vernacular': vernacular,
-        'comment': comment,
-        'collation': collation
-    }})
+    # may do
+    cookie_key = str(datetime.now().microsecond)
+    COOKIE_FILENAME_MAP[cookie_key] = file_name
+
+    return json.dumps({'success': 'true',
+                       'parts': {'title': title, 'origin': origin, 'vernacular': vernacular, 'comment': comment,
+                                 'collation': collation},
+                       'cookie_key': cookie_key
+                       })
 
 
 @main.route('/convert', methods=['POST'])
@@ -126,6 +127,10 @@ def convert():
             continue
         comment_map[comment_parts[0].strip()] = comment_parts[1].strip()
 
+    cookie_key = str(request.cookies["cookie_key"])
+    if cookie_key in COOKIE_FILENAME_MAP:
+        # todo
+        print COOKIE_FILENAME_MAP[cookie_key]
 
     for idx, origin in enumerate(origin_list):
         result.append({
@@ -148,7 +153,6 @@ def get_line_contains_comment(origin, comment_map):
     return res
 
 
-
 def translate(origin_text):
     """
     filter special char in origin text
@@ -156,6 +160,4 @@ def translate(origin_text):
     :return:
     """
     rel = [strB2Q(uc) for uc in origin_text  if strB2Q(uc) not in white_spaces ]
-
-    
     return u''.join(rel)
