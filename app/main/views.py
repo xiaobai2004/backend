@@ -102,7 +102,7 @@ def convert():
         comment_parts = re.split(re.compile(u'：'), comment)
         if len(comment_parts) != 2:
             continue
-        comment_map[comment_parts[0].strip()] = comment
+        comment_map[comment_parts[0].strip()] = u'【%s】：%s' % ( comment_parts[0].strip(),  comment_parts[1] )
 
     cookie_key = str(request.cookies["cookie_key"])
     if cookie_key in COOKIE_FILENAME_MAP:
@@ -167,3 +167,6 @@ def find_next_split_point( paragraph, begin_idx ):
 
     return idx
             
+def saveToExcel(filename, table):
+    
+    pass
