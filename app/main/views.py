@@ -90,8 +90,8 @@ def convert():
     params = request.json
     result = []
 
-    origin_list = re.split(re.compile( u'[\r\n]+' ), params['original_text'])
-    vernacular_list = re.split(re.compile(u'[\r\n]+'), params['vernacular_text'])
+    origin_list = re.split(re.compile( u'[\r\n]+' ), u''.join(translate( params['original_text'], reserve_r_n=True)))
+    vernacular_list = re.split(re.compile(u'[\r\n]+'), u''.join(translate(params['vernacular_text'], reserve_r_n=True)))
         
     comment_list = re.split(re.compile(u'[\r\n]+'), params['comment'])
     comment_map = {}
@@ -136,13 +136,17 @@ def get_line_contains_comment(origin, comment_map):
     return u'\r\n'.join( res.values())
 
 
-def translate(origin_text):
+def translate(origin_text, reserve_r_n = False):
     """
     filter special char in origin text
     :param origin_text:
     :return:
     """
-    return [strB2Q(uc) for uc in origin_text  if strB2Q(uc) not in white_spaces ]
+    if reserve_r_n:
+        return [strB2Q(uc) for uc in origin_text  if strB2Q(uc) not in [ strB2Q(u' '), strB2Q(u'\t') ]]
+    else:
+        return [strB2Q(uc) for uc in origin_text  if strB2Q(uc) not in white_spaces ]
+
 
 def devide( paragraph ):
     rel = []
@@ -166,6 +170,7 @@ def find_next_split_point( paragraph, begin_idx ):
         idx += 1
 
     return idx
+
             
 def saveToExcel(filename, table):
     
