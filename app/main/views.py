@@ -11,6 +11,7 @@ from . import main
 from ..models import TabConfig
 import jieba
 from flask import render_template, request
+import xlsxwriter
 
 def strB2Q(uchar):
     """把字符串半角转全角"""
@@ -119,6 +120,7 @@ def convert():
             "comment": get_line_contains_comment(origin, comment_map)
         })
 
+    save2excel( COOKIE_FILENAME_MAP[cookie_key], result )
     return json.dumps({"success": "true", "formatData": result})
 
 
@@ -172,6 +174,32 @@ def find_next_split_point( paragraph, begin_idx ):
     return idx
 
             
-def saveToExcel(filename, table):
+def save2excel(filename, table):
+    workbook = xlsxwriter.Workbook(u'%s.xlsx' % filename.replace(u'.txt', ''))
+    try:
+        worksheet = workbook.add_worksheet()
+        formater_vjustify = workbook.add_format()
+        formater_vjustify.set_text_wrap()
+        formater_vjustify.set_align( 'vjustify' )
+
+        formater_center = workbook.add_format()
+        formater_center.set_align( 'center' )
+
+        heads = [u'aWB出版篇码',u'书籍名称', u'句对序号', u'文言文', u'白话文', u'注释']
+        widths = { 'A:A' : 12, 'B:B': 32, 'C:C' : 8, 'D:D' : 32 , 'E:E': 48, 'F:F' : 24 }
+
+        for col in widths:
+            worksheet.set_column( col , widths[col])
+        
+        for i, head in enumerate( heads ): 
+            worksheet.write(0, i, heads[i])
+
+        for i, row in enumerate( table ):
+            worksheet.write(i + 1, 1, filename.replace(u'.txt', ''), formater_center)
+            worksheet.write(i + 1, 2, i+1, formater_center)
+            worksheet.write(i + 1, 3, row['original_text'], formater_vjustify)
+            worksheet.write(i + 1, 4, row['vernacular_text'], formater_vjustify)
+            worksheet.write(i + 1, 5, row['comment'], formater_vjustify)
+    finally:
+        workbook.close()
     
-    pass
