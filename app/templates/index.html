@@ -140,7 +140,6 @@ function uploadFile(){
                 $("#comment").val(comment);
                 $("#exportLink").attr("download",$("#fileName").text().replace(".txt", "") + ".xlsx");
                 $("#exportLink").attr("href", "/excel/" + cookie_file_key + ".xlsx");
-                $(document).cookie = "cookie_file_key=" + cookie_file_key + "&cookie_file_name=" + name;
                 localStorageRefresh($("#fileName").text(),origin,vernacular,comment, cookie_file_key);
             } else {
                 alert(data.message);
@@ -187,7 +186,6 @@ function textAreaDataInit(){
         var id = $(this).attr("id");
         if(id in localStorage){
             $(this).val(localStorage[`${id}`]);
-            $(document).cookie = "cookie_file_key=" + localStorage["cookie_file_key"] + "&cookie_file_name=" + localStorage["cookie_file_name"];
         }else{
             localStorage.setItem(id,$(this).val());
         }
