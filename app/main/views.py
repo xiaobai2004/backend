@@ -165,6 +165,8 @@ def find_next_split_point( paragraph, begin_idx ):
             
 def save2excel(cookie_file_key, filename, table):
     path = config.cur_cfg.EXCEL_OUTPUT_PATH
+    if not os.path.exists( path ):
+        os.makedirs( path )
     workbook = xlsxwriter.Workbook(u'%s/%s.xlsx' % (path, cookie_file_key))
 
     try:
