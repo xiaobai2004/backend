@@ -4,14 +4,16 @@ import os
 import re
 import time
 from datetime import datetime
+import uuid
 
 from global_vars import CHAR_SPLIT_REGEX
 from global_vars import COOKIE_FILENAME_MAP
 from . import main
 from ..models import TabConfig
 import jieba
-from flask import render_template, request
+from flask import render_template, request, make_response, send_file, send_from_directory
 import xlsxwriter
+import config
 
 def strB2Q(uchar):
     """把字符串半角转全角"""
@@ -32,30 +34,9 @@ white_spaces = set([ strB2Q(u' '), strB2Q(u'\r'), strB2Q(u'\n'), strB2Q(u'\t') ]
 assist_words = set([ strB2Q(' '), u'\r', u'\n', u'虽', u'昔', u'及', u'与', u'且', u'之', u'为', u'乎', u'也', u'于', u'以', u'乃', u'其', u'则', u'因', u'所', u'焉', u'何', u'者', u'若', u'乎', u'而', u'之', u'能', u'所', u'王'])
 
 
-seq = 0
-
-
-@main.route('/config/<path:key>', methods=['GET'])
-def get_config():
-    timeout = TabConfig.query.filter_by(key='biaodian/execise/time_limit').first().value
-    return int(timeout)
-
-
 @main.route('/', methods=['GET', 'POST'])
 def index():
     return render_template("index.html")
-
-
-@main.route('/test/new/<user>')
-def new_test(user):
-    global seq
-    seq += 1
-    return json.dumps(json.loads(u"""{
-                "user": "%s",
-                "testid": "%s",
-                 "number": 1,
-                 "question": "观自在菩萨行深般若波罗密多时照见五蕴皆空度一切苦厄"
-                }""" % (user, str(int(time.time())) + str(seq))))
 
 
 @main.route('/upload', methods=['POST'])
@@ -76,15 +57,18 @@ def upload():
         collation = translate(parts[4])
 
     # may do
-    cookie_key = str(datetime.now().microsecond)
-    COOKIE_FILENAME_MAP[cookie_key] = file_name
+    cookie_file_key =  uuid.uuid4().hex
+    cookie_file_name = file_name
 
-    return json.dumps({'success': 'true',
+    resp = make_response( json.dumps({'success': 'true',
                        'parts': {'title': title, 'origin': origin, 'vernacular': vernacular, 'comment': comment,
                                  'collation': collation},
-                       'cookie_key': cookie_key
-                       })
-
+                       'cookie_file_key': cookie_file_key,
+                       'cookie_file_name': cookie_file_name
+                       }) )
+    resp.set_cookie( 'cookie_file_key', cookie_file_key )
+    resp.set_cookie( 'cookie_file_name', cookie_file_name )
+    return resp
 
 @main.route('/convert', methods=['POST'])
 def convert():
@@ -105,11 +89,8 @@ def convert():
             continue
         comment_map[comment_parts[0].strip()] = u'【%s】：%s' % ( comment_parts[0].strip(),  comment_parts[1] )
 
-    cookie_key = str(request.cookies["cookie_key"])
-    if cookie_key in COOKIE_FILENAME_MAP:
-        # todo
-        #print COOKIE_FILENAME_MAP[cookie_key]
-        pass
+    cookie_file_key = str(request.cookies["cookie_file_key"])
+    cookie_file_name = unicode(request.cookies["cookie_file_name"])
 
     for idx, origin in enumerate(origin_list):
         if idx >= len( vernacular_list ):
@@ -120,8 +101,16 @@ def convert():
             "comment": get_line_contains_comment(origin, comment_map)
         })
 
-    save2excel( COOKIE_FILENAME_MAP[cookie_key], result )
+    save2excel( cookie_file_key, cookie_file_name, result )
     return json.dumps({"success": "true", "formatData": result})
+
+@main.route('/excel/<file>', methods=['GET'])
+def download_excel(file):
+    path = config.cur_cfg.EXCEL_OUTPUT_PATH
+    cookie_file_name = request.cookies["cookie_file_name"].replace(u'.txt', u'') + u'.xlsx'
+    response = make_response(send_from_directory(path, file, as_attachment=True))
+    response.headers["Content-Disposition"] = "attachment; mimetype=application/vnd.ms-excel; filename=%s" % cookie_file_name.encode('utf8')
+    return response
 
 
 def get_line_contains_comment(origin, comment_map):
@@ -174,8 +163,10 @@ def find_next_split_point( paragraph, begin_idx ):
     return idx
 
             
-def save2excel(filename, table):
-    workbook = xlsxwriter.Workbook(u'%s.xlsx' % filename.replace(u'.txt', ''))
+def save2excel(cookie_file_key, filename, table):
+    path = config.cur_cfg.EXCEL_OUTPUT_PATH
+    workbook = xlsxwriter.Workbook(u'%s/%s.xlsx' % (path, cookie_file_key))
+
     try:
         worksheet = workbook.add_worksheet()
         formater_vjustify = workbook.add_format()

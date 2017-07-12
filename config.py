@@ -25,6 +25,7 @@ class DevelopmentConfig(Config):
     SSL_ENABLED = bool(os.environ.get('SSL_ENABLED')) or False
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite')
+    EXCEL_OUTPUT_PATH = os.environ.get('EXCEL_OUTPUT_PATH') or basedir
 
 
 class TestingConfig(Config):
@@ -32,12 +33,14 @@ class TestingConfig(Config):
     SSL_ENABLED = bool(os.environ.get('SSL_ENABLED')) or False
     SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, 'data-test.sqlite')
+    EXCEL_OUTPUT_PATH = os.environ.get('EXCEL_OUTPUT_PATH') or basedir
 
 
 class ProductionConfig(Config):
     SSL_ENABLED = bool(os.environ.get('SSL_ENABLED')) or True
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         'sqlite:////data1/biaodianapi.sqlite'
+    EXCEL_OUTPUT_PATH = os.environ.get('EXCEL_OUTPUT_PATH') or basedir
 
 
 config = {
@@ -47,3 +50,5 @@ config = {
 
     'default': DevelopmentConfig
 }
+
+cur_cfg = config['default']
