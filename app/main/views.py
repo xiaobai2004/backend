@@ -42,8 +42,13 @@ def index():
 @main.route('/upload', methods=['POST'])
 def upload():
     file_name = request.files['file'].filename
-    origin_content = request.files['file'].stream.read().decode('gbk')
-    parts = re.split(re.compile(u'【原典】|【白话语译】|【注释】|【校勘】'), origin_content)
+    origin_content = u""
+    try:
+        origin_content = request.files['file'].stream.read().decode('utf8')
+    except:
+        origin_content = request.files['file'].stream.read().decode('gbk')
+
+    parts = re.split(re.compile(u'【原典】|【白话语译】|【注释】|【校勘注释】'), origin_content)
     if len(parts) < 4 or len(parts) > 5:
         return json.dumps({'success': 'false', 'message': u'未找到合适的分隔符：【原典】，【白话语译】，【注释】'})
 
