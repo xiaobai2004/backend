@@ -59,44 +59,37 @@ class SinaSpider(scrapy.Spider):
                 continue
             if 'br' == tag_name:
                 continue
+
             if tag_name == 'p' :
-                #print ('    ' * indent ) + "===========tag_name==========="
-                #print ('    ' * indent ) + tag_name
-                text = html2text.html2text( section_selector.extract() )
-                #print (u'    ' * indent ) + text
-                if u'![' not in text:
-                    yield TextItem(text=text)
+                sel = section_selector.xpath('./text()')
+                if len( sel ) > 0: 
+                    text = u''.join( sel.extract() )
+                    if u'![' not in text:
+                        yield TextItem(text=text)
 
             if tag_name == 'font' :
-                #print ('    ' * indent ) + "===========tag_name==========="
-                #print ('    ' * indent ) + tag_name
-                text = html2text.html2text( section_selector.extract() )
-                #print (u'    ' * indent ) + text
-                yield TextItem(text=text)
+                sel = section_selector.xpath('./text()')
+                if len( sel ) > 0: 
+                    text = u''.join( sel.extract() )
+                    if u'![' not in text:
+                        yield TextItem(text=text)
 
  
             if tag_name == 'span' :
-                #print ('    ' * indent ) + "===========tag_name==========="
-                #print ('    ' * indent ) + tag_name
-                text = html2text.html2text( section_selector.extract() )
-                #print (u'    ' * indent ) + text
-                yield TextItem(text=text)
+                sel = section_selector.xpath('./text()')
+                if len( sel ) > 0: 
+                    text = u''.join( sel.extract() )
+                    if u'![' not in text:
+                        yield TextItem(text=text)
 
             if tag_name == 'div' :
-                #print ('    ' * indent ) + "===========tag_name==========="
-                #print ('    ' * indent ) + tag_name
-                text = html2text.html2text( section_selector.extract() )
-                #print (u'    ' * indent ) + text
-                sub_selector = section_selector.xpath( './*' )
-                if sub_selector != None and len( sub_selector ) > 0:
-                    pass
-                else:
-                    yield TextItem(text=text)
+                sel = section_selector.xpath('./text()')
+                if len( sel ) > 0: 
+                    text = u''.join( sel.extract() )
+                    if u'![' not in text:
+                        yield TextItem(text=text)
 
             if tag_name == 'a' :
-                #print ('    ' * indent ) + "===========tag_name==========="
-                #print ('    ' * indent ) + tag_name
-                #print (u'    ' * indent ) + text
                 sub_selector = section_selector.xpath( './text()' )
                 if sub_selector != None and len( sub_selector ) > 0:
                     text = sub_selector.extract_first().strip()
@@ -105,9 +98,6 @@ class SinaSpider(scrapy.Spider):
 
             if tag_name == 'img':
                 img_url = section_selector.xpath( '@real_src' ).extract_first()
-                #print ('    ' * indent ) + "===========tag_name==========="
-                #print ('    ' * indent ) + tag_name
-                #print (u'    ' * indent ) + img_url
                 yield ImageItem(image_urls=[img_url])
 
             sub_selector = section_selector.xpath( './*' )

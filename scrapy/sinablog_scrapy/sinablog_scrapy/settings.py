@@ -94,6 +94,8 @@ ITEM_PIPELINES = {
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
-IMAGES_STORE = '/var/tmp/sina_images'
-DOCX_STORE = '/var/tmp/sina_docx'
+IMAGES_STORE = '/data1/sina_images'
+TXT_STORE = '/data1//sina_txt'
+DOCX_STORE = '/data1/sina_docx'
+
 

@@ -32,10 +32,9 @@ def save_text(item, content):
         suffix = ".next"
 
     print "================================================================================"
-    print os.path.join( settings.DOCX_STORE, item['seq'] + suffix )
-    f = open( os.path.join( settings.DOCX_STORE, item['seq'] + suffix ), 'ab+' )
-    f.write( content.encode('UTF-8') + u'\n'.encode('UTF-8') )
-    f.close()
+    print os.path.join( settings.TXT_STORE, item['seq'] + suffix )
+    with open( os.path.join( settings.TXT_STORE, item['seq'] + suffix ), 'ab+' ) as f:
+        f.write( content.encode('UTF-8') + u'\n'.encode('UTF-8') )
     print "================================================================================"
 
 class ErrorItemPipeline(object):

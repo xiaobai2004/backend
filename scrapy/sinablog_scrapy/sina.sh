@@ -3,7 +3,17 @@
 appdir=`dirname $0`
 start_url=$1
 
-count=0
+count=10
+if [ "" != "$2" ]; then
+    count=$2
+fi
+
+TXT_STORE=`cat $appdir/sinablog_scrapy/settings.py | grep TXT_STORE | grep -v grep | awk -F= '{print $2}' | awk -F"'" '{print $2}'`
+
+for adir in `cat $appdir/sinablog_scrapy/settings.py | grep STORE | grep -v grep | awk -F= '{print $2}' | awk -F"'" '{print $2}'`
+do
+    mkdir -p $adir
+done
 
 while [ true ]; do
 
@@ -13,11 +23,11 @@ while [ true ]; do
         echo "================================================================================"
         url=$start_url
         start_url=""
-        ls '/var/tmp/sina_docx/*' | xargs rm -f
+        ls '${TXT_STORE}/*' | xargs rm -f
 
     else
-        afile=`ls /var/tmp/sina_docx/* | grep 'prev' | grep -v 'grep'`
-        if [ -n afile ]; then
+        afile=`ls ${TXT_STORE}/* | grep 'prev' | grep -v 'grep'`
+        if [ -f $afile ]; then
             url=`cat $afile | tail -1`
         fi
         rm -f $afile
@@ -41,13 +51,13 @@ while [ true ]; do
     python $appdir/text2docx.py
     echo "[`date`] finished to crawl '$url' "
     url=""
-    ls /var/tmp/sina_docx/* | grep -v prev | xargs rm -f
+    ls ${TXT_STORE}/* | grep -v prev | xargs rm -f
 
-    count=$((count + 1))
-    if [ $count -gt 10 ]; then
+    count=$((count - 1))
+    if [ $count -le 0 ]; then
         exit 0
     fi
 
-    sleep $((RANDOM % 5 + 5 ))
+    sleep $((RANDOM % 5 + 1 ))
 
 done
