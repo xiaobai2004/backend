@@ -26,7 +26,7 @@ while [ true ]; do
         ls '${TXT_STORE}/*' | xargs rm -f
 
     else
-        afile=`ls ${TXT_STORE}/* | grep 'prev' | grep -v 'grep'`
+        afile=`ls -t ${TXT_STORE}/* | grep 'prev' | grep -v 'grep' | head -1`
         if [ -f "$afile" ]; then
             url=`cat $afile | tail -1`
         fi
