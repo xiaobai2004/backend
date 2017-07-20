@@ -3,7 +3,14 @@
 appdir=`dirname $0`
 start_url=$1
 
-count=0
+count=10
+if [ "" != $2 ]; then
+    count=$2
+fi
+
+mkdir -p /var/tmp/sina_docx
+mkdir -p /var/tmp/sina_output
+mkdir -p /var/tmp/sina_images
 
 while [ true ]; do
 
@@ -43,11 +50,11 @@ while [ true ]; do
     url=""
     ls /var/tmp/sina_docx/* | grep -v prev | xargs rm -f
 
-    count=$((count + 1))
-    if [ $count -gt 10 ]; then
+    count=$((count - 1))
+    if [ $count -le 0 ]; then
         exit 0
     fi
 
-    sleep $((RANDOM % 5 + 5 ))
+    sleep $((RANDOM % 5 + 1 ))
 
 done
