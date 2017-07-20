@@ -43,7 +43,10 @@ def text2docx():
                         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
                         paragraph_format.first_line_indent = None
 
-    doc.save( os.path.join( settings.DOCX_STORE, filename ))
+    sorted_dir=os.path.join( settings.DOCX_STORE, filename[:6])
+    if not os.path.exists( sorted_dir ):
+        os.mkdir( sorted_dir )
+    doc.save( os.path.join( sorted_dir, filename ))
 
 text2docx()
 

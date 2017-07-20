@@ -27,7 +27,7 @@ while [ true ]; do
 
     else
         afile=`ls ${TXT_STORE}/* | grep 'prev' | grep -v 'grep'`
-        if [ -f $afile ]; then
+        if [ -f "$afile" ]; then
             url=`cat $afile | tail -1`
         fi
         rm -f $afile
