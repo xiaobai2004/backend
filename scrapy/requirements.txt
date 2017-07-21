@@ -4,3 +4,5 @@ ped==1.5.0
 html2text==2016.9.19
 Pillow==4.2.1
 validators==0.12.0
+beautifulsoup4==4.6.0
+html5lib==0.999999999

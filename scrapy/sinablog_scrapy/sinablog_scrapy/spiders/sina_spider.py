@@ -74,7 +74,14 @@ class SinaSpider(scrapy.Spider):
                     if u'![' not in text:
                         yield TextItem(text=text)
 
- 
+            if tag_name == 'strong' :
+                sel = section_selector.xpath('./text()')
+                if len( sel ) > 0: 
+                    text = u''.join( sel.extract() )
+                    if u'![' not in text:
+                        yield TextItem(text=text)
+
+
             if tag_name == 'span' :
                 sel = section_selector.xpath('./text()')
                 if len( sel ) > 0: 
