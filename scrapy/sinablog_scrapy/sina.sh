@@ -23,7 +23,7 @@ while [ true ]; do
         echo "================================================================================"
         url=$start_url
         start_url=""
-        ls '${TXT_STORE}/*' | xargs rm -f
+        ls ${TXT_STORE}/* | xargs rm -f
 
     else
         afile=`ls -t ${TXT_STORE}/* | grep 'prev' | grep -v 'grep' | head -1`

@@ -2,17 +2,16 @@
 import random, time
 import scrapy
 from scrapy.loader import ItemLoader
-from sinablog_scrapy.items import BlogMetaItem, PrevBlogItem, ErrorItem, TextItem, ImageItem
+from sinablog_scrapy.items import BlogMetaItem, PrevBlogItem, ErrorItem, TextItem, ImageItem, next_seq
 from scrapy.selector import Selector
 from docx import Document
 from docx.shared import Inches
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 import html2text
+import bs4
 
 
 count = 0
-
-next_url = None 
 
 class SinaSpider(scrapy.Spider):
     name = "sina"
@@ -23,92 +22,53 @@ class SinaSpider(scrapy.Spider):
             yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response):
+        next_seq(1)
         bmItem = BlogMetaItem()
         bmItem['src_url'] = response.url
-        l = ItemLoader(item=bmItem, response=response)
-        bm_l = l.nested_xpath( '//div[@id="articlebody"]' )
-        bm_l.add_xpath( 'title', './div[@class="articalTitle"]/h2/text()' )
-        bm_l.add_xpath('publish_date', './div[@class="articalTitle"]/span[@class="time SG_txtc"]/text()')
-        bm_l.add_xpath('tags',    '//div[@id="sina_keyword_ad_area"]/table/tr/td[@class="blog_tag"]//a/text()')
-        bm_l.add_xpath('classes', '//div[@id="sina_keyword_ad_area"]/table/tr/td[@class="blog_class"]//a/text()')
-        yield bm_l.load_item()
 
-
-        try:
-            for item in self.extract_content( response.xpath( '//div[@id="sina_keyword_ad_area2"]/*' ) ):
-                 yield item
-
-        except BaseException as e:
-            e_i = ErrorItem()
-            e_i['error_msg'] = str(e)
-            yield e_i
+        bs = bs4.BeautifulSoup( response.body, 'html5lib' )
         
+        bmItem['title'] = bs.find( 'div', {'class':'articalTitle'} ).h2.string
+        bmItem['publish_date'] = bs.find( 'div', {'class':'articalTitle'} ).find( 'span', {'class':['time', 'SG_txtc']} ).string 
+        bmItem['tags'] = u''.join( [ i.string + u'　'  for i in bs.find( 'div', id='sina_keyword_ad_area').table.tr.find( 'td', {'class':'blog_tag'}).find_all('a') ] ) 
+        bmItem['classes'] = u''.join( [ i.string + u'　'  for i in bs.find( 'div', id='sina_keyword_ad_area').table.tr.find( 'td', {'class':'blog_class'}).find_all('a') ] ) 
+        yield bmItem
         
+        bs_body = bs.find( 'div', id="sina_keyword_ad_area2" )
+        for aitem in self.extract_items( bs_body ):
+            yield aitem
+
+        
+        next_seq(1)
         pbItem = PrevBlogItem()
-        pb_l = ItemLoader(item=pbItem, response=response)
-        pb_l.add_xpath( 'spans', '//div[@class="articalfrontback SG_j_linedot1 clearfix"]/div/span/text()' )
-        pb_l.add_xpath( 'urls', '//div[@class="articalfrontback SG_j_linedot1 clearfix"]/div/a/@href' )
-        yield pb_l.load_item()
+        has_prev = [ i for (i, t) in enumerate( bs.find( 'div', {'class':['articalfrontback', 'SG_j_linedot1', 'clearfix']}).find_all( 'span')) if u'前' in t.string ] 
+        if len( has_prev ) > 0:
+            pbItem['url'] = bs.find( 'div', {'class':['articalfrontback', 'SG_j_linedot1', 'clearfix']}).find_all( 'a')[has_prev[0]]['href'] 
+        else:
+            pbItem['url'] = None
+        yield pbItem
 
+    def extract_items(self, item , indent=0):
+        last_item = None
+        inc = 1
+        for sub_item in item.children:
+            if last_item != None and last_item.name == 'wbr':
+                inc = 0
+            else:
+                inc = 1
+            last_item = sub_item
 
+            print '    ' * indent + " ======= " + str(sub_item.name)
 
-    def extract_content(self, selector, indent=0):
-        for section_selector in selector:
-            tag_name =  section_selector.xpath( 'name()' ).extract_first()
-            if 'wbr' == tag_name:
-                continue
-            if 'br' == tag_name:
-                continue
+            if sub_item.name != u'img' and sub_item.string != None and len( sub_item.string.strip() ) > 0:
+                if isinstance ( sub_item, bs4.element.NavigableString ):
+                    next_seq(inc)
+                    yield TextItem(text=sub_item.string) 
+            if sub_item.name == u'img' and sub_item.get('real_src') != None:
+                next_seq(1)
+                yield ImageItem(image_urls=[ sub_item['real_src'] ])
 
-            if tag_name == 'p' :
-                sel = section_selector.xpath('./text()')
-                if len( sel ) > 0: 
-                    text = u''.join( sel.extract() )
-                    if u'![' not in text:
-                        yield TextItem(text=text)
-
-            if tag_name == 'font' :
-                sel = section_selector.xpath('./text()')
-                if len( sel ) > 0: 
-                    text = u''.join( sel.extract() )
-                    if u'![' not in text:
-                        yield TextItem(text=text)
-
-            if tag_name == 'strong' :
-                sel = section_selector.xpath('./text()')
-                if len( sel ) > 0: 
-                    text = u''.join( sel.extract() )
-                    if u'![' not in text:
-                        yield TextItem(text=text)
-
-
-            if tag_name == 'span' :
-                sel = section_selector.xpath('./text()')
-                if len( sel ) > 0: 
-                    text = u''.join( sel.extract() )
-                    if u'![' not in text:
-                        yield TextItem(text=text)
-
-            if tag_name == 'div' :
-                sel = section_selector.xpath('./text()')
-                if len( sel ) > 0: 
-                    text = u''.join( sel.extract() )
-                    if u'![' not in text:
-                        yield TextItem(text=text)
-
-            if tag_name == 'a' :
-                sub_selector = section_selector.xpath( './text()' )
-                if sub_selector != None and len( sub_selector ) > 0:
-                    text = sub_selector.extract_first().strip()
-                    if len( text ) > 0 and u'![' not in text :
-                        yield TextItem(text=text)
-
-            if tag_name == 'img':
-                img_url = section_selector.xpath( '@real_src' ).extract_first()
-                yield ImageItem(image_urls=[img_url])
-
-            sub_selector = section_selector.xpath( './*' )
-            if sub_selector != None and len( sub_selector ) > 0:
-                for item in  self.extract_content( sub_selector, indent + 1 ):
-                    yield item
+            if 'children' in  dir( sub_item ) :
+                for aitem in self.extract_items( sub_item, indent + 1 ):
+                    yield aitem
 

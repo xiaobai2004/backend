@@ -25,15 +25,15 @@ def text2docx():
 
     is_prev_img = False
     for afile in files:
+        print "===== add %s to docx ====" % afile
         if 'img' in afile:
             img_file = open( os.path.join( settings.TXT_STORE, afile ), 'r' ).readline().strip()
             doc.add_picture( os.path.join( settings.IMAGES_STORE, img_file  ) )
             is_prev_img = True
         elif 'text' in afile:
             with open( os.path.join( settings.TXT_STORE, afile ), 'r' ) as f:
-                print afile
                 content = f.readlines()
-                content = u''.join( [ i.decode('UTF-8') for i in content if len( i.decode('UTF-8').strip() ) > 0  ] )
+                content = u''.join( [ i.decode('UTF-8') for i in content if len( i.decode('UTF-8').strip() ) > 0  ] ).replace( u'\n', u'　').replace( u'\r', u'　') 
                 p =  doc.add_paragraph( content.strip() )
                 paragraph_format = p.paragraph_format
                 paragraph_format.first_line_indent = Inches(0.25)
