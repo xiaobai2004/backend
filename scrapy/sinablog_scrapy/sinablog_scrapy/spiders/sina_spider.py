@@ -30,8 +30,8 @@ class SinaSpider(scrapy.Spider):
         
         bmItem['title'] = bs.find( 'div', {'class':'articalTitle'} ).h2.string
         bmItem['publish_date'] = bs.find( 'div', {'class':'articalTitle'} ).find( 'span', {'class':['time', 'SG_txtc']} ).string 
-        bmItem['tags'] = u''.join( [ i.string + u'　'  for i in bs.find( 'div', id='sina_keyword_ad_area').table.tr.find( 'td', {'class':'blog_tag'}).find_all('a') ] ) 
-        bmItem['classes'] = u''.join( [ i.string + u'　'  for i in bs.find( 'div', id='sina_keyword_ad_area').table.tr.find( 'td', {'class':'blog_class'}).find_all('a') ] ) 
+        bmItem['tags'] = u''.join( [ i.string + u'　'  for i in bs.find( 'div', id='sina_keyword_ad_area').table.tr.find( 'td', {'class':'blog_tag'}).find_all('a') if i.string != None ] ) 
+        bmItem['classes'] = u''.join( [ i.string + u'　'  for i in bs.find( 'div', id='sina_keyword_ad_area').table.tr.find( 'td', {'class':'blog_class'}).find_all('a') if i.string != None ] ) 
         yield bmItem
         
         bs_body = bs.find( 'div', id="sina_keyword_ad_area2" )
