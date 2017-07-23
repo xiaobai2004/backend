@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import random, time
+import random, time, datetime, re
 import scrapy
 from scrapy.loader import ItemLoader
 from sinablog_scrapy.items import BlogMetaItem, PrevBlogItem, ErrorItem, TextItem, ImageItem, next_seq
@@ -13,6 +13,8 @@ import bs4
 
 count = 0
 
+ref_name = u''
+
 class SinaSpider(scrapy.Spider):
     name = "sina"
     urls = ["http://blog.sina.com.cn/s/blog_489e98b90102xd2e.html"]
@@ -22,6 +24,7 @@ class SinaSpider(scrapy.Spider):
             yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response):
+        global ref_name
         next_seq(1)
         bmItem = BlogMetaItem()
         bmItem['src_url'] = response.url
@@ -30,6 +33,9 @@ class SinaSpider(scrapy.Spider):
         
         bmItem['title'] = bs.find( 'div', {'class':'articalTitle'} ).h2.string
         bmItem['publish_date'] = bs.find( 'div', {'class':'articalTitle'} ).find( 'span', {'class':['time', 'SG_txtc']} ).string 
+
+        ref_name = bmItem['publish_date'] + u'-' + bmItem['title'] +  unicode(response.url)
+
         bmItem['tags'] = u''.join( [ i.string + u'　'  for i in bs.find( 'div', id='sina_keyword_ad_area').table.tr.find( 'td', {'class':'blog_tag'}).find_all('a') if i.string != None ] ) 
         bmItem['classes'] = u''.join( [ i.string + u'　'  for i in bs.find( 'div', id='sina_keyword_ad_area').table.tr.find( 'td', {'class':'blog_class'}).find_all('a') if i.string != None ] ) 
         yield bmItem
@@ -65,8 +71,17 @@ class SinaSpider(scrapy.Spider):
                     next_seq(inc)
                     yield TextItem(text=sub_item.string) 
             if sub_item.name == u'img' and sub_item.get('real_src') != None:
-                next_seq(1)
-                yield ImageItem(image_urls=[ sub_item['real_src'] ])
+                src = filter( lambda x: not re.compile( r'(\d+\.\d+\d\.\d+\.\d+)|(sg_trans\.gif)' ).findall( x ) , [ sub_item['real_src'], sub_item['src'] ] )
+                if len( src ) > 0 :
+                    next_seq(1)
+                    yield ImageItem(image_urls=[ src[0] ])
+                else:
+                    yield TextItem(text=u'【获取图片失败】') 
+                    with open( '/var/tmp/sina_err.log', 'a') as f:
+                        errMsg = u"[%s] Failed to fetch img in '%s'\n" % ( unicode(datetime.datetime.now()), ref_name ) 
+                        f.write( errMsg.encode( 'UTF-8' ) )
+                        errMsg = u"src '%s', real_src '%s'\n" % ( sub_item['src'], sub_item['real_src'] ) 
+                        f.write( errMsg.encode( 'UTF-8') ) 
 
             if 'children' in  dir( sub_item ) :
                 for aitem in self.extract_items( sub_item, indent + 1 ):

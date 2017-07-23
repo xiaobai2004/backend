@@ -8,9 +8,9 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 
 def text2docx():
     doc = Document()
-    filename = ""
+    filename = u""
     with open( os.path.join( settings.TXT_STORE, '100001.meta' ), 'r' ) as f:
-        filename = f.readline().strip()
+        filename = f.readline().strip().decode('UTF-8')
         if filename == None or len( filename ) == 0:
             print "Failed to find the blog meta data"
         title = f.readline().decode('UTF-8')
@@ -46,7 +46,9 @@ def text2docx():
     sorted_dir=os.path.join( settings.DOCX_STORE, filename[:6])
     if not os.path.exists( sorted_dir ):
         os.mkdir( sorted_dir )
-    doc.save( os.path.join( sorted_dir, filename ))
+
+    print type(sorted_dir), type( filename ), type( os.path.join( sorted_dir, filename ) )
+    doc.save( os.path.join( sorted_dir, filename ).encode('UTF-8'))
 
 text2docx()
 
