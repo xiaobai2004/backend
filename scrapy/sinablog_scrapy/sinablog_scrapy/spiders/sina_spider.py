@@ -70,8 +70,11 @@ class SinaSpider(scrapy.Spider):
                 if isinstance ( sub_item, bs4.element.NavigableString ):
                     next_seq(inc)
                     yield TextItem(text=sub_item.string) 
-            if sub_item.name == u'img' and sub_item.get('real_src') != None:
-                src = filter( lambda x: not re.compile( r'(\d+\.\d+\d\.\d+\.\d+)|(sg_trans\.gif)' ).findall( x ) , [ sub_item['real_src'], sub_item['src'] ] )
+            if sub_item.name == u'img' and sub_item.get('src') != None:
+                img_urls = [ sub_item['src'] ]
+                if  sub_item.get('real_src') != None:
+                    img_urls.append( sub_item['real_src'] )
+                src = filter( lambda x: not re.compile( r'(\d+\.\d+\d\.\d+\.\d+)|(sg_trans\.gif)' ).findall( x ) , img_urls )
                 if len( src ) > 0 :
                     next_seq(1)
                     yield ImageItem(image_urls=[ src[0] ])
@@ -81,8 +84,11 @@ class SinaSpider(scrapy.Spider):
                     with open( '/var/tmp/sina_err.log', 'a') as f:
                         errMsg = u"[%s] Failed to fetch img in '%s'\n" % ( unicode(datetime.datetime.now()), ref_name ) 
                         f.write( errMsg.encode( 'UTF-8' ) )
-                        errMsg = u"src '%s', real_src '%s'\n" % ( sub_item['src'], sub_item['real_src'] ) 
+                        errMsg = u"src '%s''\n" % ( sub_item.get('src') ) 
                         f.write( errMsg.encode( 'UTF-8') ) 
+                        if sub_item.get('real_src'):
+                            errMsg = u"real_src '%s''\n" % ( sub_item.get('real_src') ) 
+                            f.write( errMsg.encode( 'UTF-8') ) 
 
             if 'children' in  dir( sub_item ) :
                 for aitem in self.extract_items( sub_item, indent + 1 ):
