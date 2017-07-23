@@ -76,7 +76,8 @@ class SinaSpider(scrapy.Spider):
                     next_seq(1)
                     yield ImageItem(image_urls=[ src[0] ])
                 else:
-                    yield TextItem(text=u'【获取图片失败】') 
+                    next_seq(1)
+                    yield TextItem(text=u'【获取图片失败】')
                     with open( '/var/tmp/sina_err.log', 'a') as f:
                         errMsg = u"[%s] Failed to fetch img in '%s'\n" % ( unicode(datetime.datetime.now()), ref_name ) 
                         f.write( errMsg.encode( 'UTF-8' ) )

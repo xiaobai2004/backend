@@ -100,7 +100,10 @@ class ImageItemPipeline(object):
         if not isinstance( item, ImageItem ):
             return item
 
-        save_text( item, item['images'][0]['path'] )
+        if len( item['images'] ) == 0:
+            save_text( item, u'【下载图片失败】%s ' % ( unicode( item[imge_urls][0]) ) )
+        else:
+            save_text( item, item['images'][0]['path'] )
 
         return item
 
