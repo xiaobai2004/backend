@@ -55,20 +55,11 @@ class SinaSpider(scrapy.Spider):
         yield pbItem
 
     def extract_items(self, item , indent=0):
-        last_item = None
-        inc = 1
         for sub_item in item.children:
-            if last_item != None and last_item.name == 'wbr':
-                inc = 0
-            else:
-                inc = 1
-            last_item = sub_item
-
             print '    ' * indent + " ======= " + str(sub_item.name)
-
             if sub_item.name != u'img' and sub_item.string != None and len( sub_item.string.strip() ) > 0:
                 if isinstance ( sub_item, bs4.element.NavigableString ):
-                    next_seq(inc)
+                    next_seq(self.is_new_paragraph(sub_item))
                     yield TextItem(text=sub_item.string) 
             if sub_item.name == u'img' and sub_item.get('src') != None:
                 img_urls = [ sub_item['src'] ]
@@ -93,4 +84,22 @@ class SinaSpider(scrapy.Spider):
             if 'children' in  dir( sub_item ) :
                 for aitem in self.extract_items( sub_item, indent + 1 ):
                     yield aitem
+
+    def is_new_paragraph(self, item ):
+        if item.parent.name in [ 'span', 'font', 'strong' ]:
+            parent = item.parent
+            prev = parent.previous_sibling
+            while prev != None:
+                if isinstance( prev, bs4.element.NavigableString ):
+                    if prev.string == None or len( prev.string.strip() ) == 0 :
+                        prev = prev.previous_sibling
+                        continue
+                    else:
+                        return 0
+                elif prev.name in [ 'span', 'font', 'strong' 'wbr' ]:
+                    return 0
+                else:
+                    return 1
+        return 1
+
 

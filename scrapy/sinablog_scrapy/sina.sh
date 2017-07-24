@@ -58,6 +58,6 @@ while [ true ]; do
         exit 0
     fi
 
-    sleep $((RANDOM % 5 + 1 ))
+    sleep $((RANDOM % 11 + 2 ))
 
 done
