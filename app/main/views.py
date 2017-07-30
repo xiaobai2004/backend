@@ -43,12 +43,19 @@ def index():
 def upload():
     file_name = request.files['file'].filename
     origin_content = u""
+    raw_bytes = ""
     try:
-        origin_content = request.files['file'].stream.read().decode('utf8')
-    except:
-        origin_content = request.files['file'].stream.read().decode('gbk')
 
-    parts = re.split(re.compile(u'【原典】|【白话语译】|【注释】|【校勘注释】'), origin_content)
+        raw_bytes = request.files['file'].stream.read()
+        origin_content = raw_bytes.decode('utf8')
+        print "orginal content decoded as utf8"
+    except:
+        origin_content = raw_bytes.decode('gbk')
+        print "orginal content decoded as gbk"
+
+
+    parts = re.split(re.compile(u'【原典】|【白话语译】|【注释】|【校勘注释】', re.DOTALL), origin_content)
+    print "======== " + str( len( parts ) )
     if len(parts) < 4 or len(parts) > 5:
         return json.dumps({'success': 'false', 'message': u'未找到合适的分隔符：【原典】，【白话语译】，【注释】'})
 
