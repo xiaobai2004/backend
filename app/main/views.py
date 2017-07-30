@@ -54,19 +54,20 @@ def upload():
         print "orginal content decoded as gbk"
 
 
-    parts = re.split(re.compile(u'【原典】|【白话语译】|【注释】|【校勘注释】', re.DOTALL), origin_content)
-    print "======== " + str( len( parts ) )
-    if len(parts) < 4 or len(parts) > 5:
-        return json.dumps({'success': 'false', 'message': u'未找到合适的分隔符：【原典】，【白话语译】，【注释】'})
+    parts = split( origin_content )
 
-    title = u''.join(translate(parts[0]))
-    origin = devide(translate(parts[1]))
-    vernacular = devide(translate(parts[2]))
-    comment =  u''.join([strB2Q(uc) for uc in parts[3]  if strB2Q(uc) not in [ strB2Q(u' '), strB2Q(u'\t') ]])
+
+    if len( parts['classic'] ) == 0 or len( parts['morden']) == 0:
+        return json.dumps({'success': 'false', 'message': u'未找到合适的分隔符：【原典】，【译文】，【注释】'})
+
+    title = u''.join(translate(u''.join(parts['heading'])))
+    origin = devide(translate(u''.join(parts['classic'])))
+    vernacular = devide(translate(u''.join(parts['morden'])))
+    comment =  u''.join([strB2Q(uc) for uc in u'\r\n'.join(parts['comment']) if strB2Q(uc) not in [ strB2Q(u' '), strB2Q(u'\t') ]])
     collation = ''
 
-    if len(parts) == 5:
-        collation = translate(parts[4])
+    if len(parts['comment']) > 0:
+        collation = translate(u''.join(parts['comment']))
 
     # may do
     cookie_file_key =  uuid.uuid4().hex
@@ -81,6 +82,44 @@ def upload():
     resp.set_cookie( 'cookie_file_key', cookie_file_key )
     resp.set_cookie( 'cookie_file_name', cookie_file_name )
     return resp
+
+def split( contents ):
+    rel = { 'heading': [], 'classic': [], 'morden': [], 'comment': [], 'special_comment': [] }
+    currentTag = None
+    parts = re.split( re.compile( u'[\r\n]+' ), contents )
+    for apart in parts:
+        if len( apart.strip() ) == 0:
+            continue
+
+        if currentTag == None:
+            tag = findTag( apart )
+            if tag:
+                currentTag = tag
+            else:
+                rel['heading'].append( apart )
+        else:
+            nextTag = findTag( apart )
+            if nextTag:
+                currentTag = nextTag
+            else:
+                rel[currentTag].append( apart )
+
+    return rel
+
+def findTag( apart ):
+    if apart.strip() in [ u'【原典】']:
+        return 'classic'
+    
+    if apart.strip() in [ u'【白话语译】', u'【译文】' ]:
+        return 'morden'
+
+    if apart.strip() in [ u'【注释】']:
+        return 'comment'
+
+    if apart.strip() in [ u'【校勘注释】', u'【校勘记】']:
+        return 'special_comment'
+
+    return None
 
 @main.route('/convert', methods=['POST'])
 def convert():
@@ -160,6 +199,28 @@ def devide( paragraph ):
         rel.append(  u''.join( paragraph[curr_idx:idx + 1]) + u'\r\n\r\n')
         curr_idx = idx + 1
     return u''.join(rel)
+
+def matchSentences( classic, morden ):
+    classic = re.split( re.compile( u'[\r\n]+' ), classic )
+    morden = re.split( re.compile( u'[\r\n]+' ), morden )
+    morden_matched = []
+    idx_begin = 0
+    idx_end = idx_begin + 1 
+    for sentence in classic:
+        score = 0
+        count = 0
+        while idx_begin < len( morden ) and count < 5:
+            count += 1
+            classic_factor = makeFactor( sentence )
+            morden_factor = makeFactor( morden[idx_begin, idx_end] )
+            new_score = calcScore( classic_factor, morden_factor )
+            if new_score >= score + 2:
+                score = new_score
+            else:
+                break
+
+
+        
         
 
 def find_next_split_point( paragraph, begin_idx ):
