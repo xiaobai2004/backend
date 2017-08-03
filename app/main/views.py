@@ -107,16 +107,16 @@ def split( contents ):
     return rel
 
 def findTag( apart ):
-    if apart.strip() in [ u'【原典】']:
+    if apart.strip().strip( unichr( 0x200b ) ) in [ u'【原典】']:
         return 'classic'
     
-    if apart.strip() in [ u'【白话语译】', u'【译文】' ]:
+    if apart.strip().strip( unichr( 0x200b ) )  in [ u'【白话语译】', u'【译文】' ]:
         return 'morden'
 
-    if apart.strip() in [ u'【注释】']:
+    if apart.strip().strip( unichr( 0x200b ) )  in [ u'【注释】']:
         return 'comment'
 
-    if apart.strip() in [ u'【校勘注释】', u'【校勘记】']:
+    if apart.strip().strip( unichr( 0x200b ) )  in [ u'【校勘注释】', u'【校勘记】']:
         return 'special_comment'
 
     return None
@@ -143,14 +143,26 @@ def convert():
     cookie_file_key = str(request.cookies["cookie_file_key"])
     cookie_file_name = unicode(request.cookies["cookie_file_name"])
 
+    vernacular_idx = 0
     for idx, origin in enumerate(origin_list):
-        if idx >= len( vernacular_list ):
-            break
+        if vernacular_idx < len( vernacular_list ):
+            vernacular = vernacular_list[vernacular_idx]
+        else:
+            vernacular = ""
+        vernacular_idx += 1
         result.append({
             "original_text": origin,
-            "vernacular_text": vernacular_list[idx],
+            "vernacular_text": vernacular,
             "comment": get_line_contains_comment(origin, comment_map)
         })
+
+    while vernacular_idx < len( vernacular_list ):
+        result.append({
+            "original_text": "",
+            "vernacular_text": vernacular_list[vernacular_idx],
+            "comment": get_line_contains_comment(origin, comment_map)
+        })
+        vernacular_idx += 1
 
     save2excel( cookie_file_key, cookie_file_name, result )
     return json.dumps({"success": "true", "formatData": result})
@@ -227,7 +239,6 @@ def find_next_split_point( paragraph, begin_idx ):
     idx = begin_idx
     while idx < len( paragraph ):
         if CHAR_SPLIT_REGEX.match(paragraph[idx]):
-            
             if idx + 1 < len( paragraph ) and paragraph[idx+1] in [ u'’', u'”' ]:
                 idx += 1
             return idx
