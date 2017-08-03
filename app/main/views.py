@@ -45,13 +45,17 @@ def upload():
     origin_content = u""
     raw_bytes = ""
     try:
-
         raw_bytes = request.files['file'].stream.read()
         origin_content = raw_bytes.decode('utf8')
         print "orginal content decoded as utf8"
     except:
-        origin_content = raw_bytes.decode('gbk')
-        print "orginal content decoded as gbk"
+        print "Faield to decoded as utf8"
+        try:
+            origin_content = raw_bytes.decode('gbk')
+            print "orginal content decoded as gbk"
+        except:
+            print "Faield to decoded as gbk"
+            origin_content = u''
 
 
     parts = split( origin_content )
