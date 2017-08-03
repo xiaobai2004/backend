@@ -111,16 +111,16 @@ def split( contents ):
     return rel
 
 def findTag( apart ):
-    if apart.strip().strip( unichr( 0x200b ) ) in [ u'【原典】']:
+    if apart.strip().strip( u'\u200b\ufeff' ) in [ u'【原典】']:
         return 'classic'
     
-    if apart.strip().strip( unichr( 0x200b ) )  in [ u'【白话语译】', u'【译文】' ]:
+    if apart.strip().strip( u'\u200b\ufeff' )  in [ u'【白话语译】', u'【译文】' ]:
         return 'morden'
 
-    if apart.strip().strip( unichr( 0x200b ) )  in [ u'【注释】']:
+    if apart.strip().strip( u'\u200b\ufeff' )  in [ u'【注释】']:
         return 'comment'
 
-    if apart.strip().strip( unichr( 0x200b ) )  in [ u'【校勘注释】', u'【校勘记】']:
+    if apart.strip().strip( u'\u200b\ufeff' )  in [ u'【校勘注释】', u'【校勘记】']:
         return 'special_comment'
 
     return None
