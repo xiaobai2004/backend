@@ -134,15 +134,15 @@ def convert():
     vernacular_list = re.split(re.compile(u'[\r\n]+'), u''.join(translate(params['vernacular_text'], reserve_r_n=True)))
         
     comment_list = re.split(re.compile(u'[\r\n]+'), params['comment'])
-    comment_map = {}
-    for comment in comment_list:
+    comment_map = []
+    for i, comment in enumerate( comment_list ):
 
         if len(comment) == 0:
             continue
         comment_parts = re.split(re.compile(u'：'), comment)
-        if len(comment_parts) != 2:
+        if len(comment_parts) < 2:
             continue
-        comment_map[comment_parts[0].strip()] = u'【%s】：%s' % ( comment_parts[0].strip(),  comment_parts[1] )
+        comment_map.append( (i, comment_parts[0].strip(),  u'【%s】：%s' % ( comment_parts[0].strip(),  u''.join(comment_parts[1:]) ) ) )
 
     cookie_file_key = str(request.cookies["cookie_file_key"])
     cookie_file_name = unicode(request.cookies["cookie_file_name"])
@@ -181,17 +181,17 @@ def download_excel(file):
 
 
 def get_line_contains_comment(origin, comment_map):
-    res = {} 
-    for key in comment_map:
+    res = []
+    for i, key,value in comment_map:
         if key in origin:
-            res[key] = comment_map[key]
+            res.append( ( i, key, value ) )
 
-    for key in res:
-        del comment_map[key]
+    for i, key, value in reversed( res ):
+        comment_map[i] = ( i, u'#-#-#-not-exist-#-#', u'' )
     rel = u'' 
-    for key in res:
-        rel += res[key] + strB2Q( u' ' ) 
-    return u'\r\n'.join( res.values())
+    for i,key,value in res:
+        rel += value + strB2Q( u' ' ) 
+    return u'\r\n'.join( map( lambda (i,k,value): value, res ) )
 
 
 def translate(origin_text, reserve_r_n = False):
