@@ -142,7 +142,7 @@ def convert():
         comment_parts = re.split(re.compile(u'：'), comment)
         if len(comment_parts) < 2:
             continue
-        comment_map.append( (i, comment_parts[0].strip(),  u'【%s】：%s' % ( comment_parts[0].strip(),  u''.join(comment_parts[1:]) ) ) )
+        comment_map.append( (i, comment_parts[0].strip(),  u'【%s】：%s' % ( comment_parts[0].strip(),  u'：'.join(comment_parts[1:]) ) ) )
 
     cookie_file_key = str(request.cookies["cookie_file_key"])
     cookie_file_name = unicode(request.cookies["cookie_file_name"])
@@ -278,9 +278,13 @@ def save2excel(cookie_file_key, filename, table):
         for i, row in enumerate( table ):
             worksheet.write(i + 1, 1, filename.replace(u'.txt', ''), formater_center)
             worksheet.write(i + 1, 2, i+1, formater_center)
-            worksheet.write(i + 1, 3, row['original_text'], formater_vjustify)
-            worksheet.write(i + 1, 4, row['vernacular_text'], formater_vjustify)
-            worksheet.write(i + 1, 5, row['comment'], formater_vjustify)
+            worksheet.write(i + 1, 3, remove_placeholder(row['original_text']), formater_vjustify)
+            worksheet.write(i + 1, 4, remove_placeholder(row['vernacular_text']), formater_vjustify)
+            worksheet.write(i + 1, 5, remove_placeholder(row['comment']), formater_vjustify)
     finally:
         workbook.close()
     
+def remove_placeholder( content ):
+    if content.strip() in [ u'#无#', u'＃无＃' ]:
+        return u''
+    return content
