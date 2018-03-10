@@ -54,6 +54,8 @@
 		},
 
 		generate: function() {
+			var className = this.$el.attr("class");
+
 			this.$el
 				.addClass(ID + '-input ' + ID + '-content')
 				.on('input.' + ID, this.handleInput.bind(this))
@@ -68,6 +70,10 @@
 				.insertAfter(this.$el)
 				.append(this.$backdrop, this.$el) // moves $el into $container
 				.on('scroll', this.blockContainerScroll.bind(this));
+
+			// customized for style blow
+			this.$highlights.addClass(className);
+			// customized for style above
 
 			this.browser = this.detectBrowser();
 			switch (this.browser) {

@@ -16,12 +16,11 @@
         margin-right:1%;
         width:38%;
         overflow:auto;
-        display:inline
+        display:inline-block;
+        vertical-align: text-top;
     }
     .comment_text{
         width:20%;
-        overflow:auto;
-        display:inline
     }
     #text_lines{
         overflow: auto;
@@ -69,12 +68,18 @@
     </div>
 </div>
 <div id="edit_area" style=";margin-bottom:10px;">
-    <textarea id="original_text" class="form-control text" rows="20">
-    </textarea>
-    <textarea id="vernacular_text" class="form-control text" rows="20">
-    </textarea>
-    <textarea id="comment" class="form-control comment_text " rows="20">
-    </textarea>
+    <div class="text">
+        <textarea id="original_text" class="form-control" rows="20">
+        </textarea>
+    </div>
+    <div class="text">
+        <textarea id="vernacular_text" class="form-control" rows="20">
+        </textarea>
+    </div>
+    <div class="comment_text text">
+        <textarea id="comment" class="form-control" rows="20">
+        </textarea>
+    </div>
 </div>
 <div id="text_lines" >
      <table class="table table-striped table-condensed table-bordered table-hover">
@@ -102,7 +107,10 @@ $(document).ready(function(){
   uploadFile();
   uploadBtnBind();
   convertBtnBind();
-  $("#original_text").highlightWithinTextarea({ highlight: 'potato' }); 
+  $("#original_text").highlightWithinTextarea({ highlight: '曰' });
+  $("#vernacular_text").highlightWithinTextarea({ highlight: '妻子' });
+  $("#comment").highlightWithinTextarea({ highlight: '眷属' });
+  
   //$("#vernacular_text").highlightWithinTextarea({ highlight: 'potato' }); 
   //$("#comment").highlightWithinTextarea({ highlight: 'potato' }); 
 });
