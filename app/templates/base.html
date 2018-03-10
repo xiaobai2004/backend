@@ -8,6 +8,7 @@
 
 <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-theme.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='jquery.highlight-within-textarea.css') }}">
 
 {% block css_styles %}
 {% endblock %}
@@ -30,6 +31,7 @@
 {% block scripts %}
 <script src="{{ url_for('static', filename='jquery-3.2.1.min.js') }}"></script>
 <script src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='jquery.highlight-within-textarea.js') }}"></script>
 {% block subscripts %}
 {% endblock %}
 {% endblock %}
