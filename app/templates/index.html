@@ -7,7 +7,7 @@
 <style type="text/css">
 
     .title {
-        font-size:48 
+        font-size:48
     }
     .container{
        width: 99%;
@@ -37,7 +37,7 @@
         margin-left: 10px;
         float:right
     }
-    
+
     #uploadForm{
         margin-bottom: 10px;
         align:right
@@ -107,12 +107,11 @@ $(document).ready(function(){
   uploadFile();
   uploadBtnBind();
   convertBtnBind();
-  $("#original_text").highlightWithinTextarea({ highlight: '曰' });
-  $("#vernacular_text").highlightWithinTextarea({ highlight: '妻子' });
-  $("#comment").highlightWithinTextarea({ highlight: '眷属' });
-  
-  //$("#vernacular_text").highlightWithinTextarea({ highlight: 'potato' }); 
-  //$("#comment").highlightWithinTextarea({ highlight: 'potato' }); 
+  initHighLight();
+  scrollMirrorBind();
+
+  //$("#vernacular_text").highlightWithinTextarea({ highlight: 'potato' });
+  //$("#comment").highlightWithinTextarea({ highlight: 'potato' });
 });
 function clickDownload(aLink){
      var str = "";
@@ -175,13 +174,26 @@ function convertBtnBind(){
         }).done(function(res) {
             var data = res.formatData;
             $("#text_lines tbody").empty();
+            var ot_position = 0;
+            var vt_position = 0;
+            var c_position  = 0;
             for (idx in data){
                 var tr = $("<tr></tr>");
+                if(parseInt(idx) > 0) {
+                    ot_position += data[parseInt(idx)-1].original_text.length + 2;// get original_text every line start position
+                }
+                if(parseInt(idx) > 0) {
+                    vt_position += data[parseInt(idx)-1].vernacular_text.length + 2;// get vernacular_text every line start position
+                }
+                if(parseInt(idx) > 0) {
+                    c_position  += data[parseInt(idx)-1].comment.length + 2;// get comment every line start position
+                }
                 tr.append("<td>"+ idx +"</td>");
-                tr.append("<td>"+ data[idx].original_text +"</td>");
-                tr.append("<td>"+ data[idx].vernacular_text +"</td>");
-                tr.append("<td>"+ data[idx].comment +"</td>");
+                tr.append("<td rel='original_text' position='" + ot_position + "'>"+ data[idx].original_text +"</td>");
+                tr.append("<td rel='vernacular_text' position='" + vt_position + "'>"+ data[idx].vernacular_text +"</td>");
+                tr.append("<td rel='comment' position='" + c_position + "'>"+ data[idx].comment +"</td>");
                 $("#text_lines tbody").append(tr);
+                initHighLight();
             }
         }).fail(function(res) {});
 
@@ -239,6 +251,38 @@ function localStorageRefresh(cookie_file_name,original_text,vernacular_text,comm
     localStorage.setItem("vernacular_text",vernacular_text);
     localStorage.setItem("comment",comment);
     localStorage.setItem("cookie_file_key",cookie_file_key);
+}
+
+// scrollTop the mirror position
+function scrollMirrorBind() {
+    $("#text_lines").on('click', 'td', function(){
+        var id = $(this).attr('rel');
+        // start position
+        var position    = $(this).attr('position');
+        // mirror element
+        var m_element    = $("#" + id).siblings('.hwt-backdrop');
+        // caret
+        var caret_element= m_element.clone();
+        caret_element.children('.hwt-content').text($("#" + id).val().substring(0, position));
+        // textarea's content into the <span> created at the caret position.
+        var span = document.createElement('span');
+        span.textContent = $("#" + id).val().substring(position) || '.';
+        caret_element.children('.hwt-content').append(span);
+        m_element.parent().append(caret_element);
+        // get span height
+        var height = span.offsetTop - 10;
+        caret_element.remove();
+        // scrollTop
+        m_element[0].scrollTop = height;console.log(height);
+        $("#" + id).scrollTop(height);
+    });
+}
+
+// init highlight
+function initHighLight() {
+    $("#original_text").highlightWithinTextarea({ highlight: '曰' });
+    $("#vernacular_text").highlightWithinTextarea({ highlight: '妻子' });
+    $("#comment").highlightWithinTextarea({ highlight: '眷属' });
 }
 </script>
 {% endblock %}
