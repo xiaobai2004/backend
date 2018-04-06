@@ -193,7 +193,7 @@ function convertBtnBind(){
                 tr.append("<td rel='vernacular_text' position='" + vt_position + "'>"+ data[idx].vernacular_text +"</td>");
                 tr.append("<td rel='comment' position='" + c_position + "'>"+ data[idx].comment +"</td>");
                 $("#text_lines tbody").append(tr);
-                initHighLight();
+                updateHighLight();
             }
         }).fail(function(res) {});
 
@@ -283,6 +283,13 @@ function initHighLight() {
     $("#original_text").highlightWithinTextarea({ highlight: '曰' });
     $("#vernacular_text").highlightWithinTextarea({ highlight: '妻子' });
     $("#comment").highlightWithinTextarea({ highlight: '眷属' });
+}
+
+// update highlight
+function updateHighLight() {
+    $("#original_text").highlightWithinTextarea('update');
+    $("#vernacular_text").highlightWithinTextarea('update');
+    $("#comment").highlightWithinTextarea('update');
 }
 </script>
 {% endblock %}
