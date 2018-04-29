@@ -31,8 +31,7 @@
    "section" : 2,
    "section_id" : 123457,
    "classic " : "base64 encode",
-   "morden" : "base64 encode ";
+   "morden" : "base64 encode "
 }
-
 ```
 
