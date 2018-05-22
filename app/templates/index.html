@@ -215,6 +215,8 @@ function textAreaDataInit(){
         }
     });
     if("cookie_file_name" in localStorage){
+    	document.cookie = "cookie_file_name=" + localStorage.cookie_file_name ;
+    	document.cookie = "cookie_file_key=" + localStorage.cookie_file_key ;
         $("#fileName").html(localStorage.cookie_file_name);
         $("#exportLink").attr("download",localStorage.cookie_file_name.replace(".txt","") + ".xlsx");
         $("#exportLink").attr("href", "/excel/" + localStorage.cookie_file_key + ".xlsx");
