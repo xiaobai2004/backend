@@ -9,7 +9,6 @@ import uuid
 from global_vars import CHAR_SPLIT_REGEX
 from global_vars import COOKIE_FILENAME_MAP
 from . import main
-from ..models import TabConfig
 import jieba
 from flask import render_template, request, make_response, send_file, send_from_directory
 import xlsxwriter

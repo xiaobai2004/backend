@@ -33,3 +33,5 @@ venv/
 *.pyc
 
 *.xlsx
+
+*.sqlite

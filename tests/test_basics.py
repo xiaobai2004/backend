@@ -2,7 +2,6 @@ import unittest
 from flask import current_app
 from app import create_app, db 
 from app.main import views
-from app.models  import TabConfig
 
 
 class BasicsTestCase(unittest.TestCase):
@@ -23,11 +22,3 @@ class BasicsTestCase(unittest.TestCase):
     def test_app_is_testing(self):
         self.assertTrue(current_app.config['TESTING'])
 
-    def test_get_execise_timeout(self):
-        timeoutConfig = TabConfig( key='biaodian/execise/time_limit', value='30' )
-        db.session.add( timeoutConfig )
-        db.session.commit()
-        configRow = TabConfig.query.filter_by( key='biaodian/execise/time_limit' ).first()
-        self.assertEquals( configRow.value, '30' )
-        
-        self.assertEquals( views.get_config( 'biaodian/execise/time_limit'), 30 )
