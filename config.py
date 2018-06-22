@@ -38,7 +38,7 @@ class TestingConfig(Config):
 
 class ProductionConfig(Config):
     SSL_ENABLED = bool(os.environ.get('SSL_ENABLED')) or True
-    SQLALCHEMY_DATABASE_URI = "mysql://%(username)s:%(password)s@%(host)s:%(port)s/%(dbname)s" %  {
+    SQLALCHEMY_DATABASE_URI = "mysql+pymysql://%(username)s:%(password)s@%(host)s:%(port)s/%(dbname)s" %  {
         "username" : os.environ.get('MYSQL_USER'),
         "password" : os.environ.get('MYSQL_PASS'),
         "host" : os.environ.get('MYSQL_HOST'),
