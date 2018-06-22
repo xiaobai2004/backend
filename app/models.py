@@ -24,8 +24,8 @@ class Scripture(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     scripture_display=db.Column(db.Unicode(16), index=True)
     scripture_title=db.Column(db.Unicode(128), index=True)
-    created_at=db.Column(db.TIMESTAMP, nullable=False )
     updated_at=db.Column(db.TIMESTAMP, nullable=False )
+    created_at=db.Column(db.TIMESTAMP, nullable=False )
 
     def __repr__(self):
         return '<Scripture  %r>' % self.scripture_display
@@ -36,8 +36,8 @@ class Chapter(db.Model):
     scripture_id=db.Column(db.Integer, db.ForeignKey('wenbai_scriptures.id'))
     chapter_display=db.Column(db.Unicode(16), index=True)
     chapter__title=db.Column(db.Unicode(128), index=True)
-    created_at=db.Column(db.TIMESTAMP, nullable=False )
     updated_at=db.Column(db.TIMESTAMP, nullable=False )
+    created_at=db.Column(db.TIMESTAMP, nullable=False )
 
     def __repr__(self):
         return '<Chapter  %r>' % self.chapter_display
@@ -48,8 +48,8 @@ class Section(db.Model):
     chapter_id=db.Column(db.Integer, db.ForeignKey('wenbai_chapters.id'))
     section_display=db.Column(db.Unicode(16), index=True)
     section__title=db.Column(db.Unicode(128), index=True)
-    created_at=db.Column(db.TIMESTAMP, nullable=False )
     updated_at=db.Column(db.TIMESTAMP, nullable=False )
+    created_at=db.Column(db.TIMESTAMP, nullable=False )
 
     def __repr__(self):
         return '<Section  %r>' % self.section_display
@@ -64,8 +64,8 @@ class Sentence(db.Model):
     classic_text = db.Column(db.Text )
     modern_text  = db.Column(db.Text )
     annotation_text = db.Column(db.Text )
-    created_at=db.Column(db.TIMESTAMP, nullable=False )
     updated_at=db.Column(db.TIMESTAMP, nullable=False )
+    created_at=db.Column(db.TIMESTAMP, nullable=False )
 
     def __repr__(self):
         return '<Sectence  %r>' % self.id
@@ -75,11 +75,11 @@ class Reader(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     token = db.Column(db.String(64), unique=True, index=True)
     name = db.Column(db.Unicode(64), index=True)
-    created_at=db.Column(db.TIMESTAMP, nullable=False )
     updated_at=db.Column(db.TIMESTAMP, nullable=False )
+    created_at=db.Column(db.TIMESTAMP, nullable=False )
 
     def __repr__(self):
-        return '<Sectence  %r>' % self.id
+        return '<Reader  %r>' % self.id
 
 class RecentList(db.Model):
     __tablename__ = "wenbai_recent_list"
@@ -89,6 +89,9 @@ class RecentList(db.Model):
     chapter_id=db.Column(db.Integer, db.ForeignKey('wenbai_chapters.id'))
     section_id=db.Column(db.Integer, db.ForeignKey('wenbai_sections.id'))
     sentence_id=db.Column(db.BigInteger, db.ForeignKey('wenbai_sentences.id'))
-    created_at=db.Column(db.TIMESTAMP, nullable=False )
     updated_at=db.Column(db.TIMESTAMP, nullable=False )
+    created_at=db.Column(db.TIMESTAMP, nullable=False )
+
+    def __repr__(self):
+        return '<Recent  %r>' % self.id
 
