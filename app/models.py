@@ -88,7 +88,7 @@ class RecentList(db.Model):
     scripture_id=db.Column(db.Integer, db.ForeignKey('wenbai_scriptures.id'))
     chapter_id=db.Column(db.Integer, db.ForeignKey('wenbai_chapters.id'))
     section_id=db.Column(db.Integer, db.ForeignKey('wenbai_sections.id'))
-    sentence_id=db.Column(db.Integer, db.ForeignKey('wenbai_sentences.id'))
+    sentence_id=db.Column(db.BigInteger, db.ForeignKey('wenbai_sentences.id'))
     created_at=db.Column(db.TIMESTAMP, nullable=False )
     updated_at=db.Column(db.TIMESTAMP, nullable=False )
 
