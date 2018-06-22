@@ -38,8 +38,13 @@ class TestingConfig(Config):
 
 class ProductionConfig(Config):
     SSL_ENABLED = bool(os.environ.get('SSL_ENABLED')) or True
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-        'sqlite:////data1/biaodianapi.sqlite'
+    SQLALCHEMY_DATABASE_URI = "mysql://%(username)s:%(password)s@%(host)s:%(port)s/%(dbname)s" %  {
+        "username" : os.environ.get('MYSQL_USER'),
+        "password" : os.environ.get('MYSQL_PASS'),
+        "host" : os.environ.get('MYSQL_HOST'),
+        "port" : os.environ.get('MYSQL_PORT'),
+        "dbname" : os.environ.get('MYSQL_DB')
+    }
     EXCEL_OUTPUT_PATH = os.environ.get('EXCEL_OUTPUT_PATH') or basedir
 
 
