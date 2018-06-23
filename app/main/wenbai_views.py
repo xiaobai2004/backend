@@ -7,7 +7,7 @@ from sqlalchemy import and_
 
 from ..models import Scripture, Chapter, Section, Sentence, Reader, RecentList
 
-import Xls2DB
+#import Xls2DB
 
 import json
 
@@ -23,7 +23,7 @@ def wenbai_upload():
         file = request.files['file']
         print file
         filename = secure_filename(file.filename)
-        Xls2DB.save(file)
+        #Xls2DB.save(file)
         return redirect(url_for('main.wenbai_upload', filename=filename))
 
 
