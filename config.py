@@ -23,20 +23,14 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = True
     SSL_ENABLED = bool
-    os.environ['MYSQL_USER'] = 'root'
-    os.environ['MYSQL_PASS'] =  ''
-    os.environ['MYSQL_HOST'] = 'localhost'
-    os.environ['MYSQL_PORT'] =  '3306'
-    os.environ['MYSQL_DB'] =  'wenbaidb'
-
     os.environ.get('SSL_ENABLED') or False
 
     SQLALCHEMY_DATABASE_URI = "mysql+pymysql://%(username)s:%(password)s@%(host)s:%(port)s/%(dbname)s" %  {
-        "username" : os.environ.get('MYSQL_USER'),
-        "password" : os.environ.get('MYSQL_PASS'),
-        "host" : os.environ.get('MYSQL_HOST'),
-        "port" : os.environ.get('MYSQL_PORT'),
-        "dbname" : os.environ.get('MYSQL_DB')
+        "username" : 'root',
+        "password" : '',
+        "host" : 'localhost',
+        "port" : '3306',
+        "dbname" : 'wenbaidb'
     }
  
     EXCEL_OUTPUT_PATH = os.environ.get('EXCEL_OUTPUT_PATH') or basedir
