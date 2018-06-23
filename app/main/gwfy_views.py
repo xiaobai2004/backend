@@ -2,15 +2,12 @@
 import json
 import os
 import re
-import time
-from datetime import datetime
 import uuid
 
 from global_vars import CHAR_SPLIT_REGEX
-from global_vars import COOKIE_FILENAME_MAP
 from . import main
 import jieba
-from flask import render_template, request, make_response, send_file, send_from_directory
+from flask import render_template, request, make_response, send_from_directory
 import xlsxwriter
 import config
 

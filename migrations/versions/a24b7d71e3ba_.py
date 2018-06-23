@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 4334bb3a1c5a
+Revision ID: a24b7d71e3ba
 Revises: 
-Create Date: 2018-06-22 22:22:32.612963
+Create Date: 2018-06-23 08:09:38.926134
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '4334bb3a1c5a'
+revision = 'a24b7d71e3ba'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -28,8 +28,8 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('token', sa.String(length=64), nullable=True),
     sa.Column('name', sa.Unicode(length=64), nullable=True),
-    sa.Column('created_at', sa.TIMESTAMP(), nullable=False),
-    sa.Column('updated_at', sa.TIMESTAMP(), nullable=False),
+    sa.Column('updated_at', sa.TIMESTAMP(), server_default=sa.text(u'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'), nullable=True),
+    sa.Column('created_at', sa.TIMESTAMP(), server_default=sa.text(u'CURRENT_TIMESTAMP'), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_wenbai_readers_name'), 'wenbai_readers', ['name'], unique=False)
@@ -38,8 +38,8 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('scripture_display', sa.Unicode(length=16), nullable=True),
     sa.Column('scripture_title', sa.Unicode(length=128), nullable=True),
-    sa.Column('created_at', sa.TIMESTAMP(), nullable=False),
-    sa.Column('updated_at', sa.TIMESTAMP(), nullable=False),
+    sa.Column('updated_at', sa.TIMESTAMP(), server_default=sa.text(u'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'), nullable=True),
+    sa.Column('created_at', sa.TIMESTAMP(), server_default=sa.text(u'CURRENT_TIMESTAMP'), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_wenbai_scriptures_scripture_display'), 'wenbai_scriptures', ['scripture_display'], unique=False)
@@ -57,8 +57,8 @@ def upgrade():
     sa.Column('scripture_id', sa.Integer(), nullable=True),
     sa.Column('chapter_display', sa.Unicode(length=16), nullable=True),
     sa.Column('chapter__title', sa.Unicode(length=128), nullable=True),
-    sa.Column('created_at', sa.TIMESTAMP(), nullable=False),
-    sa.Column('updated_at', sa.TIMESTAMP(), nullable=False),
+    sa.Column('updated_at', sa.TIMESTAMP(), server_default=sa.text(u'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'), nullable=True),
+    sa.Column('created_at', sa.TIMESTAMP(), server_default=sa.text(u'CURRENT_TIMESTAMP'), nullable=True),
     sa.ForeignKeyConstraint(['scripture_id'], ['wenbai_scriptures.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -69,8 +69,8 @@ def upgrade():
     sa.Column('chapter_id', sa.Integer(), nullable=True),
     sa.Column('section_display', sa.Unicode(length=16), nullable=True),
     sa.Column('section__title', sa.Unicode(length=128), nullable=True),
-    sa.Column('created_at', sa.TIMESTAMP(), nullable=False),
-    sa.Column('updated_at', sa.TIMESTAMP(), nullable=False),
+    sa.Column('updated_at', sa.TIMESTAMP(), server_default=sa.text(u'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'), nullable=True),
+    sa.Column('created_at', sa.TIMESTAMP(), server_default=sa.text(u'CURRENT_TIMESTAMP'), nullable=True),
     sa.ForeignKeyConstraint(['chapter_id'], ['wenbai_chapters.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -84,8 +84,8 @@ def upgrade():
     sa.Column('classic_text', sa.Text(), nullable=True),
     sa.Column('modern_text', sa.Text(), nullable=True),
     sa.Column('annotation_text', sa.Text(), nullable=True),
-    sa.Column('created_at', sa.TIMESTAMP(), nullable=False),
-    sa.Column('updated_at', sa.TIMESTAMP(), nullable=False),
+    sa.Column('updated_at', sa.TIMESTAMP(), server_default=sa.text(u'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'), nullable=True),
+    sa.Column('created_at', sa.TIMESTAMP(), server_default=sa.text(u'CURRENT_TIMESTAMP'), nullable=True),
     sa.ForeignKeyConstraint(['chapter_id'], ['wenbai_chapters.id'], ),
     sa.ForeignKeyConstraint(['scripture_id'], ['wenbai_scriptures.id'], ),
     sa.ForeignKeyConstraint(['section_id'], ['wenbai_sections.id'], ),
@@ -98,8 +98,8 @@ def upgrade():
     sa.Column('chapter_id', sa.Integer(), nullable=True),
     sa.Column('section_id', sa.Integer(), nullable=True),
     sa.Column('sentence_id', sa.BigInteger(), nullable=True),
-    sa.Column('created_at', sa.TIMESTAMP(), nullable=False),
-    sa.Column('updated_at', sa.TIMESTAMP(), nullable=False),
+    sa.Column('updated_at', sa.TIMESTAMP(), server_default=sa.text(u'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'), nullable=True),
+    sa.Column('created_at', sa.TIMESTAMP(), server_default=sa.text(u'CURRENT_TIMESTAMP'), nullable=True),
     sa.ForeignKeyConstraint(['chapter_id'], ['wenbai_chapters.id'], ),
     sa.ForeignKeyConstraint(['reader_id'], ['wenbai_readers.id'], ),
     sa.ForeignKeyConstraint(['scripture_id'], ['wenbai_scriptures.id'], ),

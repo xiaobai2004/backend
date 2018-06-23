@@ -22,9 +22,23 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    SSL_ENABLED = bool(os.environ.get('SSL_ENABLED')) or False
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
-        'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite')
+    SSL_ENABLED = bool
+    os.environ['MYSQL_USER'] = 'root'
+    os.environ['MYSQL_PASS'] =  ''
+    os.environ['MYSQL_HOST'] = 'localhost'
+    os.environ['MYSQL_PORT'] =  '3306'
+    os.environ['MYSQL_DB'] =  'wenbaidb'
+
+    os.environ.get('SSL_ENABLED') or False
+
+    SQLALCHEMY_DATABASE_URI = "mysql+pymysql://%(username)s:%(password)s@%(host)s:%(port)s/%(dbname)s" %  {
+        "username" : os.environ.get('MYSQL_USER'),
+        "password" : os.environ.get('MYSQL_PASS'),
+        "host" : os.environ.get('MYSQL_HOST'),
+        "port" : os.environ.get('MYSQL_PORT'),
+        "dbname" : os.environ.get('MYSQL_DB')
+    }
+ 
     EXCEL_OUTPUT_PATH = os.environ.get('EXCEL_OUTPUT_PATH') or basedir
 
 

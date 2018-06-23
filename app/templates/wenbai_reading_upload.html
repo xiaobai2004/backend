@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Flasky{% endblock %}
+
+{% block css_styles %}
+<style type="text/css">
+
+    .title {
+        font-size:48
+    }
+    .container{
+       width: 99%;
+    }
+    .text{
+        margin-right:1%;
+        width:38%;
+        overflow:auto;
+        display:inline-block;
+        vertical-align: text-top;
+    }
+    .comment_text{
+        width:20%;
+    }
+    #text_lines{
+        overflow: auto;
+        height: 480px;
+        margin-bottom: 10px
+    }
+    #uploadFile{
+        display:none;
+    }
+    .btn-right-first{
+        float:right
+    }
+    .btn-right{
+        margin-left: 10px;
+        float:right
+    }
+
+    #uploadForm{
+        margin-bottom: 10px;
+        align:right
+    }
+    .Row
+    {
+        display: table;
+        width: 99%; /*Optional*/
+        table-layout: fixed; /*Optional*/
+    }
+    .Column
+    {
+        display: table-cell;
+    }
+</style>
+{% endblock %}
+
+{% block page_content %}
+<div id="uploadForm" class="Row">
+    <button id="uploadBtn" class="btn btn-primary btn-right-first" type="button">上传</button>
+    <input id="uploadFile" type="file" name=file/>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block subscripts %}
+<script>
+$(document).ready(function(){
+  uploadFile();
+  uploadBtnBind();
+});
+
+function uploadFile(){
+    $('#uploadFile').on("change", function(e){
+        var name = e.currentTarget.files[0].name;
+        var formData = new FormData();
+        formData.append('file', $('#uploadFile')[0].files[0]);
+        $.ajax({
+            url: "{{ url_for('main.wenbai_upload') }}",
+            type: 'POST',
+            cache: false,
+            data: formData,
+            processData: false,
+            contentType: false
+        }).done(function(res) {
+                alert("succeeded to upload " + name);
+        }).fail(function(res) {
+                alert("failed to upload" + name );
+	});
+  });
+}
+
+function uploadBtnBind(){
+  $("#uploadBtn").on('click', function(e){
+        e.preventDefault();
+        $('#uploadFile').trigger('click');
+  });
+}
+</script>
+{% endblock %}
