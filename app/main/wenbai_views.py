@@ -50,7 +50,7 @@ def get_section_id_list( scripture_id ):
     rel = { "scripture_id": scripture.id, "scripture_display": scripture.scripture_display, "section_id_list": [] }
 
     for section in sections:
-        rel["sections"].append(section.id)
+        rel["section_id_list"].append(section.id)
 
     resp = make_response(json.dumps(rel))
     resp.headers['Content-Type'] = 'application/json;charset=UTF-8'
@@ -64,30 +64,17 @@ def get_section(scripture_id, section_id):
 
     rel = {}
 
-    rel["scripture"] = { "scripture_id": scripture.id, "display": scripture.scripture_display}
-    rel["sections"] = []
+    rel["scripture_id"] = scripture.id
+    rel["scripture_display"]= scripture.scripture_display
+
     section_id = None
-    section = None
     for sentence in sentences:
         if not section_id :
             section_id = sentence.section_id
-            section = {};
-            section["section_id"] = section_id
-            section["sentences"] = []
+            rel["section_id"] = section_id
+            rel["sentences"] = []
 
-        if section_id != sentence.section_id:
-            rel["sections"].append(section)
-
-            section = {}
-            section["section_id"] = section_id
-            section["sentences"] = []
-
-            section_id = sentence.section_id
-
-        if section_id == sentence.section_id:
-            section["sentences"].append( { "sentence_id": sentence.id,  "classic": sentence.classic_text, "modern": sentence.modern_text, "annotation": sentence.annotation_text} )
-    if len(section["sentences"]) > 0:
-        rel["sections"].append(section)
+        rel["sentences"].append( { "sentence_id": sentence.id,  "classic": sentence.classic_text, "modern": sentence.modern_text, "annotation": sentence.annotation_text} )
 
     resp = make_response(json.dumps(rel))
     resp.headers['Content-Type'] = 'application/json;charset=UTF-8'
