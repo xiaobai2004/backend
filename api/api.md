@@ -51,5 +51,8 @@
 }
 ```
 
+### 词汇解释
+![glossory](https://raw.githubusercontent.com/xiaobai2004/backend/master/api/wenbai_data_model.png)
+
 
 
