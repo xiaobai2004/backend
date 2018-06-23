@@ -2,7 +2,7 @@
 
 ### 今日藏经阅读列表，经文编号
 
-- Request: /wenbai/today_list
+- Request: https://gwfy3.applinzi.com/wenbai/today_list
 
 - Response
 ```json
@@ -15,7 +15,7 @@
 
 ### 获取指定经文小节编号
 
-- Request: /wenbai/scripture/**10**/section_id_list
+- Request: https://gwfy3.applinzi.com/wenbai/scripture/10/section_id_list
 
 - Response:
 ```json
@@ -28,7 +28,7 @@
 
 ### 获取指定段的经文
 
-- Request /wenbai/scripture/**10**/section/**79**/sentences
+- Request https://gwfy3.applinzi.com/wenbai/scripture/10/section/79/sentences
 
 -Response:
 
