@@ -13,6 +13,19 @@ import global_vars
 import json
 
 
+@main.route('/wenbai/onlogin', methods=['POST'])
+def on_login():
+    if request.is_json:
+        code = request.get_json(cache=False).get("code")
+        response = make_response(json.dumps({"openid": "123456789"}))
+        return response
+    else:
+        response = make_response(json.dumps({
+            "errcode:": 3001,
+            "errmsg": "Cannot parse the json body, must add http header: Content-Type : 'application/json'"}))
+        response.status_code = 400
+        return response
+
 
 @main.route('/wenbai/wenbai_upload', methods=['GET', 'POST'])
 def wenbai_upload():
