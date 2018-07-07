@@ -6,9 +6,13 @@ from .. import db
 
 from ..models import Scripture, Chapter, Section, Sentence, Reader, RecentList
 
+import global_vars
+
 #import Xls2DB
 
 import json
+
+
 
 @main.route('/wenbai/wenbai_upload', methods=['GET', 'POST'])
 def wenbai_upload():
@@ -46,10 +50,12 @@ def get_section_id_list( scripture_id ):
     chapter_id_list = [chapter.id for chapter in chapters]
     sections = db.session.query(Section.id).filter(Section.chapter_id.in_(chapter_id_list)).order_by(Section.id).all()
 
-    rel = {"scripture_id": scripture.id, "scripture_display": scripture.scripture_display, "section_id_list": []}
+    rel = {"scripture_id": scripture.id, "scripture_display": scripture.scripture_display, "section_id_list": [],
+           "section_display_list": []}
 
-    for section in sections:
+    for i, section in enumerate(sections):
         rel["section_id_list"].append(section.id)
+        rel["section_display_list"].append("%s(%s)" % (scripture.scripture_display, global_vars.to_chinese(i+1)))
 
     resp = make_response(json.dumps(rel))
     resp.headers['Content-Type'] = 'application/json;charset=UTF-8'
@@ -63,14 +69,14 @@ def get_section(scripture_id, section_id):
     chapters = db.session.query(Chapter.id).filter(Chapter.scripture_id == scripture_id).all()
     chapter_id_list = [chapter.id for chapter in chapters]
     sections = db.session.query(Section.id).filter(Section.chapter_id.in_(chapter_id_list)).order_by(Section.id).all()
-    sentences = db.session.query(Sentence).filter(Sentence.section_id == section_id ).order_by(Sentence.id).all()
+    sentences = db.session.query(Sentence).filter(Sentence.section_id == section_id).order_by(Sentence.id).all()
 
     rel = dict()
 
     rel["scripture_id"] = scripture.id
     rel["scripture_display"] = scripture.scripture_display
 
-    url_template_func = lambda x, y: "/wenbai/scripture/%d/section/%d/sentences" % (x, y)
+    def url_template_func(x, y): "/wenbai/scripture/%d/section/%d/sentences" % (x, y)
 
     pos = -1
     for i, elem in enumerate(sections):
@@ -86,12 +92,13 @@ def get_section(scripture_id, section_id):
         if not section_id :
             section_id = sentence.section_id
             rel["section_id"] = section_id
+            rel["section_display"] = u"%s(%s)" % (scripture.scripture_display, global_vars.to_chinese(pos + 1))
             rel["sentences"] = []
 
         rel["sentences"].append({"sentence_id": sentence.id,
                                  "classic": sentence.classic_text,
                                  "modern": sentence.modern_text,
-                                 "annotation": sentence.annotation_text if sentence.annotation_text else ""})
+                                 "annotation": sentence.annotation_text if sentence.annotation_text else u""})
 
     resp = make_response(json.dumps(rel))
     resp.headers['Content-Type'] = 'application/json;charset=UTF-8'
