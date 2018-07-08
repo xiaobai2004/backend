@@ -2,6 +2,7 @@
 
 import re
 import types
+import os
 
 CHAR_FILTER_MAP = {
     "\\n": "<br/>"
@@ -11,6 +12,10 @@ CHAR_SPLIT_REGEX = re.compile(u'。|！|；|：|？')
 
 
 COOKIE_FILENAME_MAP = {}
+
+
+XIAOCHENGXU_APPID = os.getenv("XIAOCHENGXU_APIID", "wx844d772198288e5c")
+XIAOCHENGXU_SECERET = os.getenv("XIAOCHENGXU_SECERET", "a36c86944999e66c8bc011ce0cbb9e7c")
 
 
 # digit to chinese, copied from https://www.jb51.net/article/68553.htm
