@@ -25,3 +25,4 @@ jieba==0.38
 XlsxWriter==0.9.8
 #openpyxl==2.5.4
 PyMySQL==0.8.1
+requests==2.18.1
