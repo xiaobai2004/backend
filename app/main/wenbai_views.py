@@ -8,7 +8,8 @@ from ..models import Scripture, Chapter, Section, Sentence, Reader, RecentList
 
 import global_vars
 
-#import Xls2DB
+import requests
+
 
 import json
 
@@ -17,8 +18,31 @@ import json
 def on_login():
     if request.is_json:
         code = request.get_json(cache=False).get("code")
-        response = make_response(json.dumps({"openid": "123456789"}))
-        return response
+        try:
+            r = requests.get("https://api.weixin.qq.com/sns/jscode2session",
+                             {"appid": global_vars.XIAOCHENGXU_APPID,
+                              "secret": global_vars.XIAOCHENGXU_SECERET,
+                              "js_code": code,
+                              "grant_type": "authorization_code"})
+        except StandardError as e:
+            print e
+            response = make_response(json.dumps({
+                "errcode:": 2001,
+                "errmsg": "Failed to verify login code"}))
+            response.status_code = 500
+            return response
+
+        if "openid" in r.json():
+            data = {"openid": r.json()["openid"]}
+            response = make_response(json.dumps(data))
+            return response
+        else:
+            errmsg = {"errmsg": r.json()["errmsg"]}
+            response = make_response(json.dumps(errmsg))
+            response.status_code = 500
+            print r.json()
+            return response
+
     else:
         response = make_response(json.dumps({
             "errcode:": 3001,

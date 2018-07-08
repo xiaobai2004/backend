@@ -20,7 +20,8 @@
 - Response:
 ```json
 {
-		"section_id_list": [79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91],
+		"section_id_list": [79, 80],
+		"section_name_list": ["一“， ”二“],
 		 "scripture_id": 10, 
 		 "scripture_display": "\u5706\u89c9\u7ecf"
  }
@@ -36,7 +37,8 @@
 {
 	"scripture_id": 10, 
 	"section_id": 79, 
-	"scripture_display": "\u5706\u89c9\u7ecf"
+	"scripture_display": "\u5706\u89c9\u7ecf",
+	"section_display": "Section name"
 	"sentences": [
 				{"sentence_id": 658, 
 				"modern": "\u6211\u542c\u4f5b\u8fd9\u6837\u8bf4\u7684\u3002", 
@@ -47,7 +49,26 @@
 				"modern": "\u6211\u542c\u4f5b\u8fd9\u6837\u8bf4\u7684\u3002", 
 				"annotation": "\u3010\u5982\u662f\u6211\u95fb\u3011\uff1a\u5373", 
 				"classic": "\u5982\u662f\u6211\u95fb\u3002"}
-			], 
+			],
+	"prev_section_url" : ""
+	"next_section_url : ""
+}
+```
+
+### 小程序登录接口
+- Request https://gwfy3.applinzi.com/wenbai/wenbai/onlogin **POST**
+
+```json:w
+{
+"code":  "123456"
+}
+```
+
+- Response
+
+```json
+{
+"openid" : "654321"
 }
 ```
 
