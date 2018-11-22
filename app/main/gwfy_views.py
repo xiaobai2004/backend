@@ -239,7 +239,7 @@ def find_next_split_point( paragraph, begin_idx ):
     idx = begin_idx
     while idx < len( paragraph ):
         if CHAR_SPLIT_REGEX.match(paragraph[idx]):
-            if idx + 1 < len( paragraph ) and paragraph[idx+1] in [ u'’', u'”', u'」', '』', '」' ]:
+            if idx + 1 < len( paragraph ) and paragraph[idx+1] in [ u'’', u'”', u'」', u'』' ]:
                 idx += 1
             return idx
         idx += 1

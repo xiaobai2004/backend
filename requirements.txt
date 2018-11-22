@@ -20,9 +20,8 @@ python-editor==1.0.3
 httpie==0.9.9
 Flask-SSLify==0.1.4
 jsonlib==1.6.1
-requests==2.18.1
+requests==2.20.0
 jieba==0.38
 XlsxWriter==0.9.8
 #openpyxl==2.5.4
 PyMySQL==0.8.1
-requests==2.18.1
