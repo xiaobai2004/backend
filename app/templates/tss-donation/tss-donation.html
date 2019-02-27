@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+    <title>My first BootstrapVue app</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-theme.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='jquery.highlight-within-textarea.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-vue.css') }}">
+
+    <!-- Required scripts -->
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+  </head>
+  <body>
+    <!-- Our application root element -->
+    <div id="app">
+      <b-container>
+<div>
+  <b-card
+    title="项目一"
+    img-src="{{ url_for('static', filename='tss.png') }}"
+    img-alt="Image"
+    img-top
+    tag="article"
+    style="max-width: 20rem;"
+    class="mb-2"
+  >
+    <b-row>
+    <b-col>
+    <b-card-text>
+      项目一简介项目一简介项目一简介项目一简介项目一简介项目一简介项目一简介项目一简介项目一简介
+      项目一简介项目一简介项目一简介项目一简介项目一简介项目一简介项目一简介项目一简介项目一简介
+    </b-card-text>
+    </b-col>
+    </b-row>
+
+    <b-row>
+    <b-col align-h="center">
+    <div align-h="center" ><b-button  href="#" variant="primary">我要捐款供养三宝</b-button></div>
+    </b-col>
+    </b-row>
+  </b-card>
+</div>
+<div>
+  <b-card
+    title="项目二"
+    img-src="{{ url_for('static', filename='tss.png') }}"
+    img-alt="Image"
+    img-top
+    tag="article"
+    style="max-width: 20rem;"
+    class="mb-2"
+  >
+    <b-card-text>
+      项目二简介项目二简介项目二简介项目二简介项目二简介项目二简介项目二简介项目二简介项目二简介
+      项目二简介项目二简介项目二简介项目二简介项目二简介项目二简介项目二简介项目二简介项目二简介
+    </b-card-text>
+
+    <b-button  align-h="center" href="#" variant="primary">我要捐款建设餐厅</b-button>
+  </b-card>
+</div>
+
+<!-- Start running your app -->
+    <script>
+      window.app = new Vue({
+        el: '#app',
+        data: {
+          name: 'adfd'
+        },
+        computed: {
+          showAlert() {
+            return this.name.length > 4 ? true : false
+          }
+        }
+      })
+    </script>
+  </body>
+</html>
+
